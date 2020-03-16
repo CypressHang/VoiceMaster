@@ -22,7 +22,7 @@ import com.iflytek.cloud.SpeechError;
 import com.iflytek.cloud.SpeechEvaluator;
 import com.example.voicemaster.result.Result;
 import com.example.voicemaster.result.xml.XmlResultParser;
-import com.example.voicemaster.speech.setting.IseSettings;
+import com.example.voicemaster.speech.setting.VoiceTestSettings;
 
 /*import com.iflytek.sunflower.FlowerCollector;*/
 
@@ -147,7 +147,7 @@ public class VoiceTest extends Activity implements OnClickListener {
 		
 		switch (view.getId()) {
 			case R.id.image_ise_set:
-				Intent intent = new Intent(VoiceTest.this, IseSettings.class);
+				Intent intent = new Intent(VoiceTest.this, VoiceTestSettings.class);
 				startActivityForResult(intent, REQUEST_CODE_SETTINGS);
 				break;
 			case R.id.ise_start:

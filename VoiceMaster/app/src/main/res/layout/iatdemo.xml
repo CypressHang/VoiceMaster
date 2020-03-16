@@ -27,7 +27,7 @@
             android:layout_height="35dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:background="@drawable/ic_launcher_background" />
+            android:background="@drawable/main_setting_btn_np" />
     </RelativeLayout>
 
     <EditText
@@ -35,21 +35,35 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:hint="@string/text_show_iat_result"
         android:gravity="top|left"
-        android:paddingBottom="10dp"
+        android:paddingBottom="20dp"
         android:textSize="20sp" />
 
-    <EditText
-        android:id="@+id/iat_contacts"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:hint="@string/text_show_contacts"
-        android:gravity="top|left"
-        android:paddingBottom="10dp"
-        android:textSize="20sp" />
 
+    <RadioGroup
+        android:id="@+id/iat_radioGroup"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:contentDescription="识别类型"
+        android:orientation="horizontal" >
+
+        <RadioButton
+            android:id="@+id/iat_radioCloud"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="云端" >
+        </RadioButton>
+
+        <RadioButton
+            android:id="@+id/iat_radioLocal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="本地" >
+        </RadioButton>
+
+    </RadioGroup>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -83,19 +97,6 @@
             android:text="取消"
             android:textSize="20sp" />
     </LinearLayout>
-
-
-    <TextView
-        android:id="@+id/languageText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="点击设置小语种,当前语种：中文(普通话)"
-        android:layout_marginTop="10dp"
-        android:textSize="20sp"
-        android:gravity="center_horizontal"
-        android:clickable="true"
-        android:focusable="true"
-        />
 
     <Button
         android:id="@+id/iat_recognize_stream"

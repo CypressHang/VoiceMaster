@@ -1,6 +1,9 @@
 package com.example.voicemaster;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -8,9 +11,12 @@ import android.view.View;
 import android.view.Menu;
 import android.widget.Button;
 
+import com.example.voicemaster.tool.VocalIdentifyActivity;
+import com.example.voicemaster.tool.VocalVerifyDemo;
 import com.example.voicemaster.tool.VoiceRead;
-import com.example.voicemaster.tool.VoiceTest;
 import com.example.voicemaster.tool.VoiceToWord;
+import com.example.voicemaster.tool.VoiceTest;
+import com.example.voicemaster.tool.VoiceAwake;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
@@ -18,6 +24,7 @@ import com.iflytek.cloud.SpeechConstant;
 import com.iflytek.cloud.SpeechUtility;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -40,6 +47,8 @@ public class MainActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        requestPermissions();
 
         // 将“12345678”替换成您申请的APPID，申请地址：http://www.xfyun.cn
         // 请勿在“=”与appid之间添加任何空字符或者转义符
@@ -71,13 +80,14 @@ public class MainActivity extends AppCompatActivity{
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
-        mButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, VoiceToWord.class);
-                startActivity(intent);
-            }
-        });
+//        mButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(MainActivity.this, VoiceToWord.class);
+//                startActivity(intent);
+//            }
+//        });
+
         //导航栏选择
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -94,6 +104,14 @@ public class MainActivity extends AppCompatActivity{
                     case R.id.nav_voicetest:
                         Log.d(TAG, "onNavigationItemSelected: 打开朗读打分");
                         startActivity(new Intent(MainActivity.this, VoiceTest.class));
+                        break;
+                    case R.id.nav_voiceawake:
+                        Log.d(TAG, "onNavigationItemSelected: 打开语音响应");
+                        startActivity(new Intent(MainActivity.this, VoiceAwake.class));
+                        break;
+                    case R.id.nav_VoicalID:
+                        Log.d(TAG, "onNavigationItemSelected: 打开声纹管理");
+                        startActivity(new Intent(MainActivity.this, VocalVerifyDemo.class));
                         break;
 //            case R.id.nav_else_setting:
 //                startActivity(new Intent(this, SettingActivity.class));
@@ -124,5 +142,30 @@ public class MainActivity extends AppCompatActivity{
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
     }
+
+    //动态权限申请
+    private void requestPermissions(){
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                int permission = ActivityCompat.checkSelfPermission(this,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                if(permission!= PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(this,new String[] {
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.LOCATION_HARDWARE,Manifest.permission.READ_PHONE_STATE,
+                            Manifest.permission.WRITE_SETTINGS,Manifest.permission.READ_EXTERNAL_STORAGE,
+                            Manifest.permission.RECORD_AUDIO,Manifest.permission.READ_CONTACTS},0x0010);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
 
 }

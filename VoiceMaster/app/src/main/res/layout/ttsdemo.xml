@@ -1,49 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
     android:focusable="true"
     android:focusableInTouchMode="true"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp" >
+    android:padding="10dip" >
 
-    <RelativeLayout
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp" >
+        android:layout_margin="10dip"
+        android:layout_marginBottom="2dip"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal" >
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dip"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
+            android:layout_margin="10dip"
+            android:layout_weight="5"
+            android:gravity="center"
             android:text="讯飞合成示例"
             android:textSize="30sp" />
 
         <ImageButton
             android:id="@+id/image_tts_set"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
+            android:layout_width="35dip"
+            android:layout_height="35dip"
+            android:layout_margin="6dip"
+            android:layout_gravity="center"
             android:background="@drawable/main_setting_btn_np" />
-    </RelativeLayout>
+    </LinearLayout>
 
     <EditText
         android:id="@+id/tts_text"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_width="fill_parent"
+        android:layout_height="0dip"
         android:layout_weight="1"
         android:gravity="top|left"
         android:text="@string/text_tts_source"
         android:textSize="20sp" />
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dip"
+        android:layout_marginLeft="10dip"
+        android:layout_marginRight="10dip"
+        android:layout_marginTop="5dip"
         android:orientation="horizontal" >
 
         <RadioGroup
@@ -61,6 +67,19 @@
                 android:checked="true"
                 android:text="在线合成" />
 
+            <RadioButton
+                android:id="@+id/tts_radioLocal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="本地合成" />
+
+            <RadioButton
+                android:id="@+id/tts_radioXtts"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="增强版合成" />
         </RadioGroup>
 
         <Button
@@ -68,20 +87,20 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="发音人" />
+            android:text="选择发音人" />
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="2dp"
-        android:layout_marginTop="10dp"
+        android:layout_margin="10dip"
+        android:layout_marginBottom="2dip"
         android:gravity="center_horizontal"
         android:orientation="horizontal" >
 
         <Button
             android:id="@+id/tts_play"
-            android:layout_width="0dp"
+            android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="开始合成"
@@ -89,7 +108,7 @@
 
         <Button
             android:id="@+id/tts_cancel"
-            android:layout_width="0dp"
+            android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="取消"
@@ -97,16 +116,18 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="2dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginBottom="2dip"
+        android:layout_marginLeft="10dip"
+        android:layout_marginRight="10dip"
+        android:layout_marginTop="2dip"
         android:gravity="center_horizontal"
         android:orientation="horizontal" >
 
         <Button
             android:id="@+id/tts_pause"
-            android:layout_width="0dp"
+            android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="暂停播放"
@@ -114,7 +135,7 @@
 
         <Button
             android:id="@+id/tts_resume"
-            android:layout_width="0dp"
+            android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="继续播放"

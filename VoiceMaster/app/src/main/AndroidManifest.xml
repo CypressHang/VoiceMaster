@@ -28,6 +28,9 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <!--如需使用人脸识别，还要添加：摄相头权限，拍照需要用到 -->
     <uses-permission android:name="android.permission.CAMERA" />
+    <!--解锁手机的权限-->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
 
     <application
         android:allowBackup="true"
@@ -48,12 +51,7 @@
         </activity>
 
         <activity
-            android:name="com.example.voicemaster.tool.VoiceToWord"
-            android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|fontScale"
-            android:screenOrientation="fullSensor" >
-        </activity>
-        <activity
-            android:name="com.example.voicemaster.speech.setting.IatSettings"
+            android:name="com.example.voicemaster.speech.setting.VoiceToWordSetting"
             android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|fontScale"
             android:screenOrientation="fullSensor" >
         </activity>
@@ -63,17 +61,22 @@
             android:screenOrientation="fullSensor" >
         </activity>
         <activity
+            android:name=".tool.VoiceAwake"
+            android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|fontScale"
+            android:screenOrientation="fullSensor" >
+        </activity>
+        <activity
             android:name=".tool.VoiceTest"
             android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|fontScale"
             android:screenOrientation="fullSensor" >
         </activity>
         <activity
-            android:name="com.example.voicemaster.speech.setting.IseSettings"
+            android:name="com.example.voicemaster.speech.setting.VoiceTestSettings"
             android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|fontScale"
             android:screenOrientation="fullSensor" >
         </activity>
         <activity
-            android:name="com.example.voicemaster.speech.setting.TtsSettings"
+            android:name="com.example.voicemaster.speech.setting.VoiceReadSettings"
             android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|fontScale"
             android:screenOrientation="fullSensor" >
         </activity>
@@ -82,8 +85,31 @@
             android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|fontScale"
             android:screenOrientation="fullSensor" >
         </activity>
-
-
+        <activity
+            android:name=".tool.VoiceToWord"
+            android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|fontScale"
+            android:screenOrientation="fullSensor" >
+        </activity>
+        <activity
+            android:name=".tool.VocalVerifyDemo"
+            android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|fontScale"
+            android:screenOrientation="fullSensor" >
+        </activity>
+        <activity
+            android:name=".tool.VocalIdentifyActivity"
+            android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|fontScale"
+            android:screenOrientation="fullSensor" >
+        </activity>
+        <activity
+            android:name=".tool.GroupManagerActivity"
+            android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|fontScale"
+            android:screenOrientation="fullSensor" >
+        </activity>
+        <activity
+            android:name=".tool.ResultIdentifyActivity"
+            android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|fontScale"
+            android:screenOrientation="fullSensor" >
+        </activity>
 
 
 

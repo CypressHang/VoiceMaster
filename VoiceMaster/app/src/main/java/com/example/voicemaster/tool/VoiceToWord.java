@@ -1,28 +1,17 @@
 package com.example.voicemaster.tool;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.example.voicemaster.R;
@@ -33,131 +22,112 @@ import com.iflytek.cloud.RecognizerListener;
 import com.iflytek.cloud.RecognizerResult;
 import com.iflytek.cloud.SpeechConstant;
 import com.iflytek.cloud.SpeechError;
+import com.iflytek.cloud.SpeechEvent;
 import com.iflytek.cloud.SpeechRecognizer;
 import com.iflytek.cloud.ui.RecognizerDialog;
 import com.iflytek.cloud.ui.RecognizerDialogListener;
 import com.iflytek.cloud.util.ContactManager;
 import com.iflytek.cloud.util.ContactManager.ContactListener;
-//import com.iflytek.speech.setting.IatSettings;
-//import com.iflytek.speech.util.FucUtil;
-//import com.iflytek.speech.util.JsonParser;
-import com.example.voicemaster.speech.setting.IatSettings;
+import com.iflytek.cloud.util.ResourceUtil;
+import com.example.voicemaster.speech.setting.VoiceToWordSetting;
 import com.example.voicemaster.speech.util.FucUtil;
-import com.example.voicemaster.speech.util.JsonParser;
 
-/*import com.iflytek.sunflower.FlowerCollector;*/
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 
-public class VoiceToWord extends Activity implements OnClickListener {
-	private static String TAG = VoiceToWord.class.getSimpleName();
+//import com.iflytek.cloud.param.MscKeys;
+
+public class VoiceToWord extends Activity implements OnClickListener{
+	private static String TAG = "IatDemo";
 	// 语音听写对象
 	private SpeechRecognizer mIat;
 	// 语音听写UI
 	private RecognizerDialog mIatDialog;
+	// 听写结果内容
+	private EditText mResultText;
 	// 用HashMap存储听写结果
 	private HashMap<String, String> mIatResults = new LinkedHashMap<String, String>();
 
-	private EditText mResultText;
-	private EditText showContacts;
-	private TextView languageText;
 	private Toast mToast;
+
 	private SharedPreferences mSharedPreferences;
-	// 引擎类型
-	private String mEngineType = SpeechConstant.TYPE_CLOUD;
-
-	private String[] languageEntries ;
-	private String[] languageValues;
-	private String language="zh_cn";
-	private int selectedNum=0;
-
-	private String resultType = "json";
-
-	private boolean cyclic = false;//音频流识别是否循环调用
-
-	private StringBuffer buffer = new StringBuffer();
-
-	Handler han = new Handler(){
-
-		@Override
-		public void handleMessage(Message msg) {
-			super.handleMessage(msg);
-			if (msg.what == 0x001) {
-				executeStream();
-			}
-		}
-	};
-
-	private static int flg=0;
-
+	private String mEngineType = "cloud";
+	
 	@SuppressLint("ShowToast")
-	public void onCreate(Bundle savedInstanceState) {
+	public void onCreate(Bundle savedInstanceState)
+	{
 		super.onCreate(savedInstanceState);
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.iatdemo);
-
-		languageEntries = getResources().getStringArray(R.array.iat_language_entries);
-		languageValues = getResources().getStringArray(R.array.iat_language_value);
 		initLayout();
 		// 初始化识别无UI识别对象
 		// 使用SpeechRecognizer对象，可根据回调消息自定义界面；
-		mIat = SpeechRecognizer.createRecognizer(VoiceToWord.this, mInitListener);
+		mIat = SpeechRecognizer.createRecognizer(this, mInitListener);
 		
 		// 初始化听写Dialog，如果只使用有UI听写功能，无需创建SpeechRecognizer
 		// 使用UI听写功能，请根据sdk文件目录下的notice.txt,放置布局文件和图片资源
-		mIatDialog = new RecognizerDialog(VoiceToWord.this, mInitListener);
-
-		mSharedPreferences = getSharedPreferences(IatSettings.PREFER_NAME,
-				Activity.MODE_PRIVATE);
+		mIatDialog = new RecognizerDialog(this,mInitListener);
+		
+		mSharedPreferences = getSharedPreferences(VoiceToWordSetting.PREFER_NAME, Activity.MODE_PRIVATE);
 		mToast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
-		mResultText = ((EditText) findViewById(R.id.iat_text));
-		showContacts = (EditText) findViewById(R.id.iat_contacts);
+		mResultText = ((EditText)findViewById(R.id.iat_text));
 	}
-
-
-
 
 	/**
 	 * 初始化Layout。
 	 */
-	private void initLayout() {
-		findViewById(R.id.iat_recognize).setOnClickListener(VoiceToWord.this);
-		findViewById(R.id.iat_recognize_stream).setOnClickListener(VoiceToWord.this);
-		findViewById(R.id.iat_upload_contacts).setOnClickListener(VoiceToWord.this);
-		findViewById(R.id.iat_upload_userwords).setOnClickListener(VoiceToWord.this);
-		findViewById(R.id.iat_stop).setOnClickListener(VoiceToWord.this);
-		findViewById(R.id.iat_cancel).setOnClickListener(VoiceToWord.this);
-		findViewById(R.id.image_iat_set).setOnClickListener(VoiceToWord.this);
-		findViewById(R.id.languageText).setOnClickListener(VoiceToWord.this);
+	private void initLayout(){
+		findViewById(R.id.iat_recognize).setOnClickListener(this);
+		findViewById(R.id.iat_recognize_stream).setOnClickListener(this);
+		findViewById(R.id.iat_upload_contacts).setOnClickListener(this);
+		findViewById(R.id.iat_upload_userwords).setOnClickListener(this);
+		findViewById(R.id.iat_stop).setOnClickListener(this);
+		findViewById(R.id.iat_cancel).setOnClickListener(this);
+		findViewById(R.id.image_iat_set).setOnClickListener(this);
+
+
+		//选择云端or本地
+		RadioGroup group = (RadioGroup)this.findViewById(R.id.iat_radioGroup);
+		group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(RadioGroup group, int checkedId) {
+				if(checkedId == R.id.iat_radioCloud) {
+					findViewById(R.id.iat_upload_contacts).setEnabled(true);
+					findViewById(R.id.iat_upload_userwords).setEnabled(true);
+					mEngineType = SpeechConstant.TYPE_CLOUD;
+				}else if(checkedId == R.id.iat_radioLocal) {
+					//离线听写不支持联系人/热词上传
+					findViewById(R.id.iat_upload_contacts).setEnabled(false);
+					findViewById(R.id.iat_upload_userwords).setEnabled(false);
+					mEngineType =  SpeechConstant.TYPE_LOCAL;
+				}
+			}
+		});
 	}
 
-	int ret = 0; // 函数调用返回值
-
+	int ret = 0;// 函数调用返回值
 	@Override
-	public void onClick(View view) {
+	public void onClick(View view) {		
 		if( null == mIat ){
 			// 创建单例失败，与 21001 错误为同样原因，参考 http://bbs.xfyun.cn/forum.php?mod=viewthread&tid=9688
-			this.showTip( "创建对象失败，请确认 libmsc.so 放置正确，且有调用 createUtility 进行初始化" );
+			this.showTip( "创建对象失败，请确认 libmsc.so 放置正确，\n 且有调用 createUtility 进行初始化" );
 			return;
 		}
 		
 		switch (view.getId()) {
 		// 进入参数设置页面
 		case R.id.image_iat_set:
-			Intent intents = new Intent(VoiceToWord.this, IatSettings.class);
+			Intent intents = new Intent(VoiceToWord.this, VoiceToWordSetting.class);
 			startActivity(intents);
 			break;
 		// 开始听写
 		// 如何判断一次听写结束：OnResult isLast=true 或者 onError
 		case R.id.iat_recognize:
-			// 移动数据分析，收集开始听写事件
-		//	FlowerCollector.onEvent(IatDemo.this, "iat_recognize");
-
-			buffer.setLength(0);
 			mResultText.setText(null);// 清空显示内容
 			mIatResults.clear();
 			// 设置参数
 			setParam();
-			boolean isShowDialog = mSharedPreferences.getBoolean(
-					getString(R.string.pref_key_iat_show), true);
+			boolean isShowDialog = mSharedPreferences.getBoolean(getString(R.string.pref_key_iat_show), true);
 			if (isShowDialog) {
 				// 显示听写对话框
 				mIatDialog.setListener(mRecognizerDialogListener);
@@ -175,10 +145,33 @@ public class VoiceToWord extends Activity implements OnClickListener {
 			break;
 		// 音频流识别
 		case R.id.iat_recognize_stream:
-			executeStream();
-			break;
-		case R.id.languageText:
-			setLanguage(view);
+			mResultText.setText(null);// 清空显示内容
+			mIatResults.clear();
+			// 设置参数
+			setParam();
+			// 设置音频来源为外部文件
+			mIat.setParameter(SpeechConstant.AUDIO_SOURCE, "-1");
+			// 也可以像以下这样直接设置音频文件路径识别（要求设置文件在sdcard上的全路径）：
+			// mIat.setParameter(SpeechConstant.AUDIO_SOURCE, "-2");
+			// mIat.setParameter(SpeechConstant.ASR_SOURCE_PATH, "sdcard/XXX/XXX.pcm");
+			ret = mIat.startListening(mRecognizerListener);
+			if (ret != ErrorCode.SUCCESS) {
+				showTip("识别失败,错误码：" + ret+",请点击网址https://www.xfyun.cn/document/error-code查询解决方案");
+			} else {
+				byte[] audioData = FucUtil.readAudioFile(VoiceToWord.this, "iattest.wav");
+				
+				if (null != audioData) {
+					showTip(getString(R.string.text_begin_recognizer));
+					// 一次（也可以分多次）写入音频文件数据，数据格式必须是采样率为8KHz或16KHz（本地识别只支持16K采样率，云端都支持），位长16bit，单声道的wav或者pcm
+					// 写入8KHz采样的音频时，必须先调用setParameter(SpeechConstant.SAMPLE_RATE, "8000")设置正确的采样率
+					// 注：当音频过长，静音部分时长超过VAD_EOS将导致静音后面部分不能识别
+					mIat.writeAudio(audioData, 0, audioData.length);
+					mIat.stopListening();
+				} else {
+					mIat.cancel();
+					showTip("读取音频流失败");
+				}
+			}
 			break;
 		// 停止听写
 		case R.id.iat_stop:
@@ -193,18 +186,17 @@ public class VoiceToWord extends Activity implements OnClickListener {
 		// 上传联系人
 		case R.id.iat_upload_contacts:
 			showTip(getString(R.string.text_upload_contacts));
-			ContactManager mgr = ContactManager.createManager(VoiceToWord.this,
-					mContactListener);
+			ContactManager mgr = ContactManager.createManager(VoiceToWord.this, mContactListener);
 			mgr.asyncQueryAllContactsName();
 			break;
-		// 上传用户词表
+			// 上传用户词表
 		case R.id.iat_upload_userwords:
 			showTip(getString(R.string.text_upload_userwords));
 			String contents = FucUtil.readFile(VoiceToWord.this, "userwords","utf-8");
-			showContacts.setText(contents);
-
+			mResultText.setText(contents);
 			// 指定引擎类型
 			mIat.setParameter(SpeechConstant.ENGINE_TYPE, SpeechConstant.TYPE_CLOUD);
+			// 置编码类型
 			mIat.setParameter(SpeechConstant.TEXT_ENCODING, "utf-8");
 			ret = mIat.updateLexicon("userword", contents, mLexiconListener);
 			if (ret != ErrorCode.SUCCESS)
@@ -228,33 +220,6 @@ public class VoiceToWord extends Activity implements OnClickListener {
 			}
 		}
 	};
-
-	/**
-	 * 在线听写支持多种小语种设置。支持语言类型如下：
-	 *         <item>zh_cn</item> 中文
-	 *         <item>en_us</item> 英文
-	 *         <item>ja_jp</item> 日语
-	 *         <item>ru-ru</item> 俄语
-	 *         <item>es_es</item> 西班牙语
-	 *         <item>fr_fr</item> 法语
-	 *         <item>ko_kr</item> 韩语
-	 * @param v
-	 */
-	private void setLanguage(View v){
-		new AlertDialog.Builder(v.getContext()).setTitle("语种语言种类")
-				.setSingleChoiceItems(languageEntries, // 单选框有几项,各是什么名字
-						0, // 默认的选项
-						new DialogInterface.OnClickListener() { // 点击单选框后的处理
-							public void onClick(DialogInterface dialog,
-												int which) { // 点击了哪一项
-								language = languageValues[which];
-								((TextView)findViewById(R.id.languageText)).setText("你选择的是："+languageEntries[which]);
-								selectedNum = which;
-								dialog.dismiss();
-							}
-						}).show();
-		mIat.setParameter(SpeechConstant.LANGUAGE, language);
-	}
 
 	/**
 	 * 上传联系人/词表监听器。
@@ -287,7 +252,7 @@ public class VoiceToWord extends Activity implements OnClickListener {
 			// Tips：
 			// 错误码：10118(您没有说话)，可能是录音机权限被禁，需要提示用户打开应用的录音权限。
 
-            showTip(error.getPlainDescription(true));
+			showTip(error.getPlainDescription(true));
 
 		}
 
@@ -299,23 +264,15 @@ public class VoiceToWord extends Activity implements OnClickListener {
 
 		@Override
 		public void onResult(RecognizerResult results, boolean isLast) {
-			Log.d(TAG, results.getResultString());
-			System.out.println(flg++);
-			if (resultType.equals("json")) {
 
-			    printResult(results);
+			String text = JsonParser.parseIatResult(results.getResultString());
+			mResultText.append(text);
+			mResultText.setSelection(mResultText.length());
 
-			}else if(resultType.equals("plain")) {
-				buffer.append(results.getResultString());
-				mResultText.setText(buffer.toString());
-				mResultText.setSelection(mResultText.length());
-			}
+			
+			if(isLast) {
+				//TODO 最后的结果
 
-			if (isLast & cyclic) {
-				// TODO 最后的结果
-				Message message = Message.obtain();
-				message.what = 0x001;
-				han.sendMessageDelayed(message,100);
 			}
 		}
 
@@ -329,51 +286,31 @@ public class VoiceToWord extends Activity implements OnClickListener {
 		public void onEvent(int eventType, int arg1, int arg2, Bundle obj) {
 			// 以下代码用于获取与云端的会话id，当业务出错时将会话id提供给技术支持人员，可用于查询会话日志，定位出错原因
 			// 若使用本地能力，会话id为null
-			//	if (SpeechEvent.EVENT_SESSION_ID == eventType) {
-			//		String sid = obj.getString(SpeechEvent.KEY_EVENT_SESSION_ID);
-			//		Log.d(TAG, "session id =" + sid);
-			//	}
+				if (SpeechEvent.EVENT_SESSION_ID == eventType) {
+					String sid = obj.getString(SpeechEvent.KEY_EVENT_AUDIO_URL);
+					Log.d(TAG, "session id =" + sid);
+				}
 		}
 	};
-
-	private void printResult(RecognizerResult results) {
-		String text = JsonParser.parseIatResult(results.getResultString());
-
-		String sn = null;
-		// 读取json结果中的sn字段
-		try {
-			JSONObject resultJson = new JSONObject(results.getResultString());
-			sn = resultJson.optString("sn");
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-
-		mIatResults.put(sn, text);
-
-		StringBuffer resultBuffer = new StringBuffer();
-		for (String key : mIatResults.keySet()) {
-			resultBuffer.append(mIatResults.get(key));
-		}
-
-		mResultText.setText(resultBuffer.toString());
-		mResultText.setSelection(mResultText.length());
-	}
-
+	
 	/**
 	 * 听写UI监听器
 	 */
 	private RecognizerDialogListener mRecognizerDialogListener = new RecognizerDialogListener() {
 		public void onResult(RecognizerResult results, boolean isLast) {
+			Log.d(TAG, "recognizer result：" + results.getResultString());
 
-		    printResult(results);
-			
+			String text = JsonParser.parseIatResult(results.getResultString());
+			mResultText.append(text);
+			mResultText.setSelection(mResultText.length());
+
 		}
 
 		/**
 		 * 识别回调错误.
 		 */
 		public void onError(SpeechError error) {
-		    showTip(error.getPlainDescription(true));
+			showTip(error.getPlainDescription(true));
 
 		}
 
@@ -392,7 +329,7 @@ public class VoiceToWord extends Activity implements OnClickListener {
 			// 指定引擎类型
 			runOnUiThread(new Runnable() {
 				public void run() {
-					showContacts.setText(contactInfos);
+					mResultText.setText(contactInfos);
 				}
 			});
 			
@@ -405,41 +342,50 @@ public class VoiceToWord extends Activity implements OnClickListener {
 		}
 	};
 
-	private void showTip(final String str) {
-		mToast.setText(str);
-		mToast.show();
+	private void showTip(final String str)
+	{
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				mToast.setText(str);
+				mToast.show();
+			}
+		});
 	}
 
 	/**
 	 * 参数设置
-	 * 
 	 * @return
 	 */
-	public void setParam() {
+	public void setParam(){
 		// 清空参数
 		mIat.setParameter(SpeechConstant.PARAMS, null);
-
-		// 设置听写引擎
+		String lag = mSharedPreferences.getString("iat_language_preference", "mandarin");
+		// 设置引擎
 		mIat.setParameter(SpeechConstant.ENGINE_TYPE, mEngineType);
 		// 设置返回结果格式
-		mIat.setParameter(SpeechConstant.RESULT_TYPE, resultType);
+		mIat.setParameter(SpeechConstant.RESULT_TYPE, "json");
 
+		//mIat.setParameter(MscKeys.REQUEST_AUDIO_URL,"true");
 
-		if(language.equals("zh_cn")) {
-			String lag = mSharedPreferences.getString("iat_language_preference",
-					"mandarin");
-			Log.e(TAG,"language:"+language);// 设置语言
+	//	this.mTranslateEnable = mSharedPreferences.getBoolean( this.getString(R.string.pref_key_translate), false );
+		if (mEngineType.equals(SpeechConstant.TYPE_LOCAL)) {
+			// 设置本地识别资源
+			mIat.setParameter(ResourceUtil.ASR_RES_PATH, getResourcePath());
+		}
+        // 在线听写支持多种小语种，若想了解请下载在线听写能力，参看其speechDemo
+		if (lag.equals("en_us")) {
+			// 设置语言
+			mIat.setParameter(SpeechConstant.LANGUAGE, "en_us");
+			mIat.setParameter(SpeechConstant.ACCENT, null);
+
+			// 设置语言
 			mIat.setParameter(SpeechConstant.LANGUAGE, "zh_cn");
 			// 设置语言区域
-			mIat.setParameter(SpeechConstant.ACCENT, lag);
-		}else {
+			mIat.setParameter(SpeechConstant.ACCENT,lag);
 
-			mIat.setParameter(SpeechConstant.LANGUAGE, language);
 		}
-		Log.e(TAG,"last language:"+mIat.getParameter(SpeechConstant.LANGUAGE));
 
-		//此处用于设置dialog中不显示错误码信息
-		//mIat.setParameter("view_tips_plain","false");
 
 		// 设置语音前端点:静音超时时间，即用户多长时间不说话则当做超时处理
 		mIat.setParameter(SpeechConstant.VAD_BOS, mSharedPreferences.getString("iat_vadbos_preference", "4000"));
@@ -455,6 +401,16 @@ public class VoiceToWord extends Activity implements OnClickListener {
 		mIat.setParameter(SpeechConstant.ASR_AUDIO_PATH, Environment.getExternalStorageDirectory()+"/msc/iat.wav");
 	}
 
+	private String getResourcePath(){
+		StringBuffer tempBuffer = new StringBuffer();
+		//识别通用资源
+		tempBuffer.append(ResourceUtil.generateResourcePath(this, ResourceUtil.RESOURCE_TYPE.assets, "iat/common.jet"));
+		tempBuffer.append(";");
+		tempBuffer.append(ResourceUtil.generateResourcePath(this, ResourceUtil.RESOURCE_TYPE.assets, "iat/sms_16k.jet"));
+		//识别8k资源-使用8k的时候请解开注释
+		return tempBuffer.toString();
+	}
+
 
 	@Override
 	protected void onDestroy() {
@@ -464,65 +420,6 @@ public class VoiceToWord extends Activity implements OnClickListener {
 			// 退出时释放连接
 			mIat.cancel();
 			mIat.destroy();
-		}
-	}
-
-	@Override
-	protected void onResume() {
-		// 开放统计 移动数据统计分析
-		/*FlowerCollector.onResume(IatDemo.this);
-		FlowerCollector.onPageStart(TAG);*/
-		super.onResume();
-	}
-
-	@Override
-	protected void onPause() {
-		// 开放统计 移动数据统计分析
-
-		super.onPause();
-	}
-
-	//执行音频流识别操作
-	private void executeStream() {
-		buffer.setLength(0);
-		mResultText.setText(null);// 清空显示内容
-		mIatResults.clear();
-		// 设置参数
-		setParam();
-		// 设置音频来源为外部文件
-		mIat.setParameter(SpeechConstant.AUDIO_SOURCE, "-1");
-		// 也可以像以下这样直接设置音频文件路径识别（要求设置文件在sdcard上的全路径）：
-		// mIat.setParameter(SpeechConstant.AUDIO_SOURCE, "-2");
-		 //mIat.setParameter(SpeechConstant.ASR_SOURCE_PATH, "sdcard/XXX/XXX.pcm");
-		ret = mIat.startListening(mRecognizerListener);
-		if (ret != ErrorCode.SUCCESS) {
-			showTip("识别失败,错误码：" + ret+",请点击网址https://www.xfyun.cn/document/error-code查询解决方案");
-		} else {
-			byte[] audioData = FucUtil.readAudioFile(VoiceToWord.this, "iattest.wav");
-
-			if (null != audioData) {
-				showTip(getString(R.string.text_begin_recognizer));
-				// 一次（也可以分多次）写入音频文件数据，数据格式必须是采样率为8KHz或16KHz（本地识别只支持16K采样率，云端都支持），
-				// 位长16bit，单声道的wav或者pcm
-				// 写入8KHz采样的音频时，必须先调用setParameter(SpeechConstant.SAMPLE_RATE, "8000")设置正确的采样率
-				// 注：当音频过长，静音部分时长超过VAD_EOS将导致静音后面部分不能识别。
-				 ArrayList<byte[]> bytes = FucUtil.splitBuffer(audioData,audioData.length,audioData.length/3);
-				 for(int i=0;i<bytes.size();i++) {
-					 mIat.writeAudio(bytes.get(i), 0, bytes.get(i).length );
-
-					 try {
-						 Thread.sleep(1000);
-					 }catch(Exception e){
-
-					 }
-				 }
-				mIat.stopListening();
-				/*mIat.writeAudio(audioData, 0, audioData.length );
-				mIat.stopListening();*/
-			} else {
-				mIat.cancel();
-				showTip("读取音频流失败");
-			}
 		}
 	}
 }

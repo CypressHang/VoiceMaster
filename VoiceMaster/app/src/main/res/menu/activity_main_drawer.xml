@@ -13,10 +13,6 @@
             android:icon="@drawable/ic_menu_gallery"
             android:title="@string/menu_gallery" />
         <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="@string/menu_slideshow" />
-        <item
             android:id="@+id/nav_voicetoword"
             android:icon="@drawable/ic_menu_share"
             android:title="语音转文字" />
@@ -28,15 +24,19 @@
             android:id="@+id/nav_voicetest"
             android:icon="@drawable/ic_menu_subway"
             android:title="朗读打分" />
+        <item
+            android:id="@+id/nav_voiceawake"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="语音响应" />
     </group>
 
 
-    <item android:title="@string/menu_see">
+    <item android:title="更厉害的功能">
         <menu>
             <item
-                android:id="@+id/nav_see_little_sister"
+                android:id="@+id/nav_VoicalID"
                 android:icon="@drawable/ic_menu_sister"
-                android:title="@string/menu_see_little_sister" />
+                android:title="声纹管理" />
             <item
                 android:id="@+id/nav_see_news"
                 android:icon="@drawable/ic_menu_news"
