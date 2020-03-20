@@ -14,7 +14,7 @@
 
     <string name="home_second">Home Second</string>
 
-<!--    <string name="app_name">讯飞语音示例</string>-->
+    <!--    <string name="app_name">讯飞语音示例</string>-->
     <!-- 请替换成在语音云官网申请的appid -->
     <string name="app_id">5e6b5006</string>
     <string name="example_explain">本示例为讯飞语音Android平台开发者提供语音听写、语法识别、语义理解和语音合成等代码样例，旨在让用户能够依据该示例快速开发出基于语音接口的应用程序。</string>
@@ -121,7 +121,7 @@
         <item>4</item>
         <item>5</item>
     </string-array>
-    <string formatted="false" name="tts_toast_format">缓冲进度为%d%%，播放进度为%d%%</string>
+    <string name="tts_toast_format" formatted="false">缓冲进度为%d%%，播放进度为%d%%</string>
     <string-array name="voicer_xtts_entries">
         <item>小燕</item>
         <item>小峰</item>
@@ -131,8 +131,8 @@
         <item>xiaofeng</item>
     </string-array>
     <string-array name="voicer_local_entries">
-    <item>小燕</item>
-    <item>小峰</item>
+        <item>小燕</item>
+        <item>小峰</item>
     </string-array>
     <string-array name="voicer_local_values">
         <item>xiaoyan</item>
@@ -325,7 +325,6 @@
          \ncom.github.bumptech.glide:compiler
          \ncom.jakewharton.timber:timber
     </string>
-
 
 
 </resources>
