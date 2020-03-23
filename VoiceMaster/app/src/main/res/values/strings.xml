@@ -14,6 +14,9 @@
 
     <string name="home_second">Home Second</string>
 
+    <!-- 自定义常用 -->
+    <string name="text_cypress_self">王柏行掌握面向对象编程的思想，扎实的C++功底，熟练掌握VC++,VS.NET等开发工具;掌握COM技术，有COM开发经验;熟悉MFC、SDK、多线程、gdi+、winsocket等;熟悉各种网络协议，如：tcp/ip，http，soap协议;深入理解XML，有丰富的XML开发经验，熟练掌握DOM、SAX解析过程;熟悉SQLSERVER，能独立完成系统的分析、设计和开发。有良好的编程习惯，能够编写高内聚松耦合的模块。有较强的团队合作精神。善于总结开发经验，能够合理的运用设计模式进行开发，热爱编程工作，并具有良好的自学能力，适应能力，做事积极性高。</string>
+
     <!--    <string name="app_name">讯飞语音示例</string>-->
     <!-- 请替换成在语音云官网申请的appid -->
     <string name="app_id">5e6b5006</string>

@@ -41,6 +41,10 @@
                 android:id="@+id/nav_KeyWord"
                 android:icon="@drawable/ic_menu_news"
                 android:title="关键词提取" />
+            <item
+                android:id="@+id/nav_Translation"
+                android:icon="@drawable/shape_bg_about_text_purple"
+                android:title="翻译" />
         </menu>
     </item>
 

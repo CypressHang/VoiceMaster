@@ -1,5 +1,7 @@
 package com.example.voicemaster.keyword;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -12,6 +14,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.voicemaster.R;
+import com.example.voicemaster.keyword.bean.KeyWordBean;
+import com.example.voicemaster.translate.bean.AddrBean;
+import com.google.gson.Gson;
 import com.iflytek.cloud.msc.util.Base64;
 
 import java.io.BufferedReader;
@@ -25,7 +30,13 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 
 
@@ -39,7 +50,9 @@ public class KeyWordFind extends AppCompatActivity {
     // 接口密钥
     private static final String API_KEY = "dc49e97387e0581ab06b143ab10c447f";
     // 文本
-    private String TEXT = "打开页面物联网";
+    private String TEXT = "王柏行好帅啊啊啊";
+
+    private double threshold = 0.5;
 
 
     private static final String TYPE = "dependent";
@@ -75,7 +88,8 @@ public class KeyWordFind extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 TEXT = et_oriText.getText().toString();
-                Toast.makeText(getBaseContext(),"开始喽",Toast.LENGTH_LONG).show();
+                Toast.makeText(getBaseContext(),"你是我的关键词!",Toast.LENGTH_LONG).show();
+                TV_Key.setText("");
                 getResult();
             }
         });
@@ -99,7 +113,23 @@ public class KeyWordFind extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        TV_Key.setText("itp 接口调用结果：" + result);
+        Gson json = new Gson();
+        KeyWordBean keyWordBean = json.fromJson(result, KeyWordBean.class);
+        List<KeyWordBean.DataBean.KeyBean> resultList = keyWordBean.getData().getKey();
+        Collections.sort(resultList, new Comparator<KeyWordBean.DataBean.KeyBean>() {
+            @Override
+            public int compare(KeyWordBean.DataBean.KeyBean o1, KeyWordBean.DataBean.KeyBean o2) {
+                int i = (int) (o1.getScore() - o2.getScore());
+                return i;
+            }
+        });
+        for(int i = 0; i< resultList.size(); i++){
+            //分数大于阈值就输出
+            if(resultList.get(i).getScore() > threshold){
+                String scoreStr ="" + resultList.get(i).getScore();
+                TV_Key.append("关键词值"+scoreStr + "  -- " + resultList.get(i).getWord() + "\n");
+            }
+        }
     }
 
 
@@ -191,7 +221,5 @@ public class KeyWordFind extends AppCompatActivity {
         }
         return result;
     }
-
-
 
 }

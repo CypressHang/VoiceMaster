@@ -113,21 +113,30 @@
         android:layout_marginTop="5dp"
         android:orientation="horizontal" >
 
-        <Button
-            android:id="@+id/isv_reocrd"
-            style="@style/textStyle"
+        <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="开始录音" />
+            android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/isv_identity"
-            style="@style/textStyle"
-            android:layout_width="0.1dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="1:N验证" />
+            <Button
+                android:id="@+id/isv_reocrd"
+                style="@style/textStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="开始录音" />
+
+            <Button
+                android:id="@+id/isv_identity"
+                style="@style/textStyle"
+                android:layout_width="0.1dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="1:N验证"
+                android:visibility="invisible" />
+        </LinearLayout>
+
     </LinearLayout>
 
     <TextView

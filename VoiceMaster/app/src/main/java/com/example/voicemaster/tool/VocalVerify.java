@@ -20,6 +20,7 @@ import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.Toast;
 
 import com.example.voicemaster.R;
+import com.example.voicemaster.tool.vocal.GroupManagerActivity;
 import com.iflytek.cloud.ErrorCode;
 import com.iflytek.cloud.IdentityListener;
 import com.iflytek.cloud.IdentityResult;
@@ -30,7 +31,6 @@ import com.iflytek.cloud.SpeechError;
 import com.iflytek.cloud.SpeechEvent;
 import com.iflytek.cloud.record.PcmRecorder;
 import com.iflytek.cloud.util.VerifierUtil;
-import com.example.voicemaster.tool.GroupManagerActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,8 +43,8 @@ import org.json.JSONObject;
  * @date 2017/9/28.
  * @see <a href="http://www.xfyun.cn">讯飞开放平台</a>
  */
-public class VocalVerifyDemo extends Activity implements OnClickListener,View.OnTouchListener {
-	private static final String TAG = VocalVerifyDemo.class.getSimpleName();
+public class VocalVerify extends Activity implements OnClickListener,View.OnTouchListener {
+	private static final String TAG = VocalVerify.class.getSimpleName();
 	// 密码类型
 	// 默认为数字密码
 	private int mPwdType = 3;
@@ -363,7 +363,7 @@ public class VocalVerifyDemo extends Activity implements OnClickListener,View.On
 
 		initUi();
 
-		mIdVerifier = IdentityVerifier.createVerifier(VocalVerifyDemo.this, new InitListener() {
+		mIdVerifier = IdentityVerifier.createVerifier(VocalVerify.this, new InitListener() {
 
 			@Override
 			public void onInit(int errorCode) {
@@ -381,17 +381,17 @@ public class VocalVerifyDemo extends Activity implements OnClickListener,View.On
 		mResultEditText = (EditText) findViewById(R.id.edt_result);
 		mAuthidEditText = (EditText) findViewById(R.id.set_authId);
 		btn_start_record = (Button) findViewById(R.id.isv_reocrd);
-		btn_start_record.setOnTouchListener(VocalVerifyDemo.this);
-		findViewById(R.id.isv_getpassword).setOnClickListener(VocalVerifyDemo.this);
-		findViewById(R.id.isv_search).setOnClickListener(VocalVerifyDemo.this);
-		findViewById(R.id.isv_delete).setOnClickListener(VocalVerifyDemo.this);
-		findViewById(R.id.isv_identity).setOnClickListener(VocalVerifyDemo.this);
+		btn_start_record.setOnTouchListener(VocalVerify.this);
+		findViewById(R.id.isv_getpassword).setOnClickListener(VocalVerify.this);
+		findViewById(R.id.isv_search).setOnClickListener(VocalVerify.this);
+		findViewById(R.id.isv_delete).setOnClickListener(VocalVerify.this);
+		findViewById(R.id.isv_identity).setOnClickListener(VocalVerify.this);
 
 
-		mToast = Toast.makeText(VocalVerifyDemo.this, "", Toast.LENGTH_SHORT);
+		mToast = Toast.makeText(VocalVerify.this, "", Toast.LENGTH_SHORT);
 		mToast.setGravity(Gravity.BOTTOM|Gravity.CENTER_HORIZONTAL, 0, 0);
 
-		mProDialog = new ProgressDialog(VocalVerifyDemo.this);
+		mProDialog = new ProgressDialog(VocalVerify.this);
 		mProDialog.setCancelable(true);
 		mProDialog.setTitle("请稍候");
 		// cancel进度框时，取消正在进行的操作
@@ -548,7 +548,7 @@ public class VocalVerifyDemo extends Activity implements OnClickListener,View.On
 				executeModelCommand("delete");
 				break;
 			case R.id.isv_identity:
-				Intent init  = new Intent(VocalVerifyDemo.this, GroupManagerActivity.class);
+				Intent init  = new Intent(VocalVerify.this, GroupManagerActivity.class);
 				init.putExtra("auth_id",authid);
 				init.putExtra("mfv_scenes","ivp");
 				startActivity(init);

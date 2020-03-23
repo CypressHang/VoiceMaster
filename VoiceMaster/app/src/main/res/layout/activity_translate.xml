@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".keyword.KeyWordFind">
+    tools:context=".translate.Translate">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -12,15 +12,14 @@
         android:orientation="vertical">
 
         <EditText
-            android:id="@+id/et_oriText"
+            android:id="@+id/et_oriTeans"
             android:layout_width="match_parent"
-            android:layout_height="250dp"
+            android:layout_height="307dp"
             android:ems="10"
             android:gravity="top|left"
-            android:inputType="textMultiLine"
             android:selectAllOnFocus="false"
             android:singleLine="false"
-            android:text="王柏行是一个来自河南省洛阳市的帅哥." />
+            android:text="@string/text_cypress_self" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -28,23 +27,23 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/btn_key"
-                android:layout_width="202dp"
+                android:id="@+id/btn_start"
+                android:layout_width="215dp"
                 android:layout_height="wrap_content"
-                android:text="分析关键词" />
+                android:text="开始翻译" />
 
             <Button
-                android:id="@+id/btn_none"
+                android:id="@+id/btn_nothing"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="还没想好这个按钮干嘛" />
+                android:text="还没想好干啥" />
         </LinearLayout>
 
         <TextView
-            android:id="@+id/TV_key"
+            android:id="@+id/tv_result"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="你是我的关键词!" />
-    </LinearLayout>
+            android:text="这里显示翻译的内容" />
 
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

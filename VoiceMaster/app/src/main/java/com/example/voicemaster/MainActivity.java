@@ -12,11 +12,12 @@ import android.view.Menu;
 import android.widget.Button;
 
 import com.example.voicemaster.keyword.KeyWordFind;
-import com.example.voicemaster.tool.VocalVerifyDemo;
+import com.example.voicemaster.tool.VocalVerify;
 import com.example.voicemaster.tool.VoiceRead;
 import com.example.voicemaster.tool.VoiceToWord;
 import com.example.voicemaster.tool.VoiceTest;
 import com.example.voicemaster.tool.VoiceAwake;
+import com.example.voicemaster.translate.Translate;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
@@ -111,12 +112,17 @@ public class MainActivity extends AppCompatActivity{
                         break;
                     case R.id.nav_VoicalID:
                         Log.d(TAG, "onNavigationItemSelected: 打开声纹管理");
-                        startActivity(new Intent(MainActivity.this, VocalVerifyDemo.class));
+                        startActivity(new Intent(MainActivity.this, VocalVerify.class));
                         break;
                     case R.id.nav_KeyWord:
                         Log.d(TAG, "onNavigationItemSelected: 打开关键词提取");
                         startActivity(new Intent(MainActivity.this, KeyWordFind.class));
                         break;
+                    case R.id.nav_Translation:
+                        Log.d(TAG, "onNavigationItemSelected: 打开翻译");
+                        startActivity(new Intent(MainActivity.this, Translate.class));
+                        break;
+
 //            case R.id.nav_else_setting:
 //                startActivity(new Intent(this, SettingActivity.class));
 //                break;

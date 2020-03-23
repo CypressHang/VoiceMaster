@@ -45,4 +45,5 @@ dependencies {
     implementation files('libs/AIUI.jar')
     implementation files('libs/Msc.jar')
     implementation 'org.jetbrains:annotations-java5:15.0'
+    implementation files('libs/gson-2.3.1.jar')
 }

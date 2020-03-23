@@ -1,4 +1,4 @@
-package com.example.voicemaster.tool;
+package com.example.voicemaster.tool.vocal;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
