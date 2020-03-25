@@ -54,7 +54,7 @@ public class Translate extends AppCompatActivity {
     // 目标语种
     private static String TO = "en";
     // 翻译文本
-    private static String TEXT = "我好帅啊哈哈哈";
+    public static String TEXT = "我是柏行啊哈哈哈";
 
     private static final String TAG = "cypress";
 
@@ -85,7 +85,17 @@ public class Translate extends AppCompatActivity {
             StrictMode.setThreadPolicy(policy);
         }
 
+        initText();
+        initBtn();
+
+    }
+    private void initText(){
+        if(TEXT == null) TEXT = "王柏行掌握面向对象编程的思想，扎实的C++功底，熟练掌握VC++,VS.NET等开发工具";
+        et_ori.setText(TEXT);
+    }
+    private void initBtn(){
         btn_start.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
                 TEXT = et_ori.getText().toString();

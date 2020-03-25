@@ -1,11 +1,20 @@
 package com.example.voicemaster.tool;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ContentUris;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.DocumentsContract;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -14,7 +23,13 @@ import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import androidx.core.app.ActivityCompat;
+
+import com.example.voicemaster.MainActivity;
 import com.example.voicemaster.R;
+import com.example.voicemaster.keyword.KeyWordFind;
+import com.example.voicemaster.keyword.bean.KeyWordBean;
+import com.example.voicemaster.translate.Translate;
 import com.iflytek.cloud.ErrorCode;
 import com.iflytek.cloud.InitListener;
 import com.iflytek.cloud.LexiconListener;
@@ -39,6 +54,11 @@ import java.util.LinkedHashMap;
 
 public class VoiceToWord extends Activity implements OnClickListener{
 	private static String TAG = "IatDemo";
+	private static final int REQUEST_EXTERNAL_STORAGE = 1;
+	private static String[] PERMISSIONS_STORAGE = {
+			Manifest.permission.READ_EXTERNAL_STORAGE,
+			Manifest.permission.WRITE_EXTERNAL_STORAGE };
+
 	// 语音听写对象
 	private SpeechRecognizer mIat;
 	// 语音听写UI
@@ -52,13 +72,16 @@ public class VoiceToWord extends Activity implements OnClickListener{
 
 	private SharedPreferences mSharedPreferences;
 	private String mEngineType = "cloud";
-	
+
+	//选择文件的路径
+	public String path = null;
+
 	@SuppressLint("ShowToast")
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setContentView(R.layout.iatdemo);
+		setContentView(R.layout.voice_to_word);
 		initLayout();
 		// 初始化识别无UI识别对象
 		// 使用SpeechRecognizer对象，可根据回调消息自定义界面；
@@ -84,6 +107,9 @@ public class VoiceToWord extends Activity implements OnClickListener{
 		findViewById(R.id.iat_stop).setOnClickListener(this);
 		findViewById(R.id.iat_cancel).setOnClickListener(this);
 		findViewById(R.id.image_iat_set).setOnClickListener(this);
+		findViewById(R.id.btn_chooseFile).setOnClickListener(this);
+		findViewById(R.id.btn_jumpKey).setOnClickListener(this);
+		findViewById(R.id.btn_jumpTranslation).setOnClickListener(this);
 
 
 		//选择云端or本地
@@ -143,32 +169,57 @@ public class VoiceToWord extends Activity implements OnClickListener{
 				}
 			}
 			break;
+		//选择文件
+		case R.id.btn_chooseFile:
+			//通过文件管理器读取手机上的文件
+			Log.d(TAG, "onClick: 通过文件管理器读取手机上的文件");
+			Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+			//intent.setType(“image/*”);//选择图片
+			intent.setType("audio/*"); //选择音频
+			//intent.setType(“video/*”); //选择视频 （mp4 3gp 是android支持的视频格式）
+			//intent.setType(“video/*;image/*”);//同时选择视频和图片
+			//intent.setType("*/*");//无类型限制
+			intent.addCategory(Intent.CATEGORY_OPENABLE);
+			startActivityForResult(intent, 1);
+			Log.d(TAG, "onClick: path = " + path);
+			break;
 		// 音频流识别
 		case R.id.iat_recognize_stream:
 			mResultText.setText(null);// 清空显示内容
 			mIatResults.clear();
 			// 设置参数
 			setParam();
+
 			// 设置音频来源为外部文件
+			if(path == null){
+				Toast.makeText(this, "请先选择文件", Toast.LENGTH_SHORT).show();
+				break;
+			}
+			verifyStoragePermissions(this);
+
 			mIat.setParameter(SpeechConstant.AUDIO_SOURCE, "-1");
 			// 也可以像以下这样直接设置音频文件路径识别（要求设置文件在sdcard上的全路径）：
-			// mIat.setParameter(SpeechConstant.AUDIO_SOURCE, "-2");
-			// mIat.setParameter(SpeechConstant.ASR_SOURCE_PATH, "sdcard/XXX/XXX.pcm");
+//			 mIat.setParameter(SpeechConstant.AUDIO_SOURCE, "-2");
+//			 mIat.setParameter(SpeechConstant.ASR_SOURCE_PATH, "sdcard/XXX/XXX.pcm");
+//			mIat.setParameter(SpeechConstant.ASR_SOURCE_PATH, path);
 			ret = mIat.startListening(mRecognizerListener);
 			if (ret != ErrorCode.SUCCESS) {
 				showTip("识别失败,错误码：" + ret+",请点击网址https://www.xfyun.cn/document/error-code查询解决方案");
 			} else {
-				byte[] audioData = FucUtil.readAudioFile(VoiceToWord.this, "iattest.wav");
-				
+//				byte[] audioData = FucUtil.readAudioFile(VoiceToWord.this, "isetest.wav");
+				byte[] audioData = FucUtil.readDesAudioFile(VoiceToWord.this, path);
+
 				if (null != audioData) {
 					showTip(getString(R.string.text_begin_recognizer));
 					// 一次（也可以分多次）写入音频文件数据，数据格式必须是采样率为8KHz或16KHz（本地识别只支持16K采样率，云端都支持），位长16bit，单声道的wav或者pcm
 					// 写入8KHz采样的音频时，必须先调用setParameter(SpeechConstant.SAMPLE_RATE, "8000")设置正确的采样率
 					// 注：当音频过长，静音部分时长超过VAD_EOS将导致静音后面部分不能识别
+					Log.d(TAG, "onClick: 准备分析音频");
 					mIat.writeAudio(audioData, 0, audioData.length);
 					mIat.stopListening();
 				} else {
 					mIat.cancel();
+					Log.d(TAG, "onClick: 读取音频流失败");
 					showTip("读取音频流失败");
 				}
 			}
@@ -201,6 +252,26 @@ public class VoiceToWord extends Activity implements OnClickListener{
 			ret = mIat.updateLexicon("userword", contents, mLexiconListener);
 			if (ret != ErrorCode.SUCCESS)
 				showTip("上传热词失败,错误码：" + ret+",请点击网址https://www.xfyun.cn/document/error-code查询解决方案");
+			break;
+		//跳转到关键词分析
+		case R.id.btn_jumpKey:
+			if (mResultText.getText().toString() == null || mResultText.getText().toString().equals("")){
+				Toast.makeText(this, "啥都没有，不能跳转", Toast.LENGTH_SHORT).show();
+				break;
+			}
+		    KeyWordFind.TEXT = mResultText.getText().toString();
+			Log.d(TAG, "onNavigationItemSelected: 打开关键词提取");
+			startActivity(new Intent(this, KeyWordFind.class));
+			break;
+		//跳转到翻译
+		case R.id.btn_jumpTranslation:
+			if (mResultText.getText().toString() == null || mResultText.getText().toString().equals("")){
+				Toast.makeText(this, "啥都没有，不能跳转", Toast.LENGTH_SHORT).show();
+				break;
+			}
+			Translate.TEXT = mResultText.getText().toString();
+			Log.d(TAG, "onNavigationItemSelected: 打开翻译");
+			startActivity(new Intent(this, Translate.class));
 			break;
 		default:
 			break;
@@ -411,6 +482,175 @@ public class VoiceToWord extends Activity implements OnClickListener{
 		return tempBuffer.toString();
 	}
 
+	//文件管理器获得选择文件的路径
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (resultCode == Activity.RESULT_OK) {
+			Uri uri = data.getData();
+			if ("file".equalsIgnoreCase(uri.getScheme())){//使用第三方应用打开
+				path = uri.getPath();
+//				tv.setText(path);
+				Toast.makeText(this,path+"11111",Toast.LENGTH_SHORT).show();
+				return;
+			}
+			if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {//4.4以后
+				path = getPath(VoiceToWord.this, uri);
+//				tv.setText(path);
+				Toast.makeText(this,path,Toast.LENGTH_SHORT).show();
+			} else {//4.4以下下系统调用方法
+				path = getRealPathFromURI(uri);
+//				tv.setText(path);
+				Toast.makeText(this, path+"222222", Toast.LENGTH_SHORT).show();
+			}
+		}
+	}
+	public String getRealPathFromURI(Uri contentUri) {
+		String res = null;
+		String[] proj = { MediaStore.Images.Media.DATA };
+		Cursor cursor = getContentResolver().query(contentUri, proj, null, null, null);
+		if(null!=cursor&&cursor.moveToFirst()){;
+			int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+			res = cursor.getString(column_index);
+			cursor.close();
+		}
+		return res;
+	}
+	/**
+	 * 专为Android4.4设计的从Uri获取文件绝对路径，以前的方法已不好使
+	 */
+	@SuppressLint("NewApi")
+	public String getPath(final VoiceToWord context, final Uri uri) {
+
+		final boolean isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
+
+		// DocumentProvider
+		if (isKitKat && DocumentsContract.isDocumentUri(context, uri)) {
+			// ExternalStorageProvider
+			if (isExternalStorageDocument(uri)) {
+				final String docId = DocumentsContract.getDocumentId(uri);
+				final String[] split = docId.split(":");
+				final String type = split[0];
+
+				if ("primary".equalsIgnoreCase(type)) {
+					return Environment.getExternalStorageDirectory() + "/" + split[1];
+				}
+			}
+			// DownloadsProvider
+			else if (isDownloadsDocument(uri)) {
+
+				final String id = DocumentsContract.getDocumentId(uri);
+				final Uri contentUri = ContentUris.withAppendedId(
+						Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
+
+				return getDataColumn(context, contentUri, null, null);
+			}
+			// MediaProvider
+			else if (isMediaDocument(uri)) {
+				final String docId = DocumentsContract.getDocumentId(uri);
+				final String[] split = docId.split(":");
+				final String type = split[0];
+
+				Uri contentUri = null;
+				if ("image".equals(type)) {
+					contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+				} else if ("video".equals(type)) {
+					contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+				} else if ("audio".equals(type)) {
+					contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+				}
+
+				final String selection = "_id=?";
+				final String[] selectionArgs = new String[]{split[1]};
+
+				return getDataColumn(context, contentUri, selection, selectionArgs);
+			}
+		}
+		// MediaStore (and general)
+		else if ("content".equalsIgnoreCase(uri.getScheme())) {
+			return getDataColumn(context, uri, null, null);
+		}
+		// File
+		else if ("file".equalsIgnoreCase(uri.getScheme())) {
+			return uri.getPath();
+		}
+		return null;
+	}
+	/**
+	 * Get the value of the data column for this Uri. This is useful for
+	 * MediaStore Uris, and other file-based ContentProviders.
+	 *
+	 * @param context       The context.
+	 * @param uri           The Uri to query.
+	 * @param selection     (Optional) Filter used in the query.
+	 * @param selectionArgs (Optional) Selection arguments used in the query.
+	 * @return The value of the _data column, which is typically a file path.
+	 */
+	public String getDataColumn(Context context, Uri uri, String selection,
+								String[] selectionArgs) {
+
+		Cursor cursor = null;
+		final String column = "_data";
+		final String[] projection = {column};
+
+		try {
+			cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs,
+					null);
+			if (cursor != null && cursor.moveToFirst()) {
+				final int column_index = cursor.getColumnIndexOrThrow(column);
+				return cursor.getString(column_index);
+			}
+		} finally {
+			if (cursor != null)
+				cursor.close();
+		}
+		return null;
+	}
+	/**
+	 * @param uri The Uri to check.
+	 * @return Whether the Uri authority is ExternalStorageProvider.
+	 */
+	public boolean isExternalStorageDocument(Uri uri) {
+		return "com.android.externalstorage.documents".equals(uri.getAuthority());
+	}
+	/**
+	 * @param uri The Uri to check.
+	 * @return Whether the Uri authority is DownloadsProvider.
+	 */
+	public boolean isDownloadsDocument(Uri uri) {
+		return "com.android.providers.downloads.documents".equals(uri.getAuthority());
+	}
+	/**
+	 * @param uri The Uri to check.
+	 * @return Whether the Uri authority is MediaProvider.
+	 */
+	public boolean isMediaDocument(Uri uri) {
+		return "com.android.providers.media.documents".equals(uri.getAuthority());
+	}
+
+	//获取文件名
+	public String getFileName(String pathandname){
+		if(pathandname == null) return null;
+		int start=pathandname.lastIndexOf("/");
+		int end=pathandname.lastIndexOf(".");
+		if (start!=-1 && end!=-1) {
+//			return pathandname.substring(start+1, end);
+			return pathandname.substring(start+1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	public static void verifyStoragePermissions(Activity activity) {
+		// Check if we have write permission
+		int permission = ActivityCompat.checkSelfPermission(activity,
+				Manifest.permission.WRITE_EXTERNAL_STORAGE);
+		if (permission != PackageManager.PERMISSION_GRANTED) {
+			// We don't have permission so prompt the user
+			ActivityCompat.requestPermissions(activity, PERMISSIONS_STORAGE,
+					REQUEST_EXTERNAL_STORAGE);
+		}
+	}
 
 	@Override
 	protected void onDestroy() {
@@ -422,4 +662,6 @@ public class VoiceToWord extends Activity implements OnClickListener{
 			mIat.destroy();
 		}
 	}
+
+	
 }

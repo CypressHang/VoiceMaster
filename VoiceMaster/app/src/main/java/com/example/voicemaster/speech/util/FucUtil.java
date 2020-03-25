@@ -1,4 +1,6 @@
 package com.example.voicemaster.speech.util;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -11,11 +13,14 @@ import com.iflytek.cloud.SpeechConstant;
 import com.iflytek.cloud.SpeechUtility;
 
 import android.content.Context;
+import android.util.Log;
 
 /**
  * 功能性函数扩展类
  */
 public class FucUtil {
+	private static final String TAG = "cypress";
+
 	/**
 	 * 读取asset目录下文件。
 	 * @return content
@@ -140,5 +145,27 @@ public class FucUtil {
 		
 		return null;
 	}
-	
+
+	//读取自定义文件
+	public static byte[] readDesAudioFile(Context context, String filename) {
+		try {
+//			InputStream ins = context.getAssets().open(filename);
+//			Log.d(TAG, "readDesAudioFile: filename = " + filename);
+			File file = new File(filename);
+			FileInputStream ins = new FileInputStream(file);
+
+			byte[] data = new byte[ins.available()];
+
+			ins.read(data);
+			ins.close();
+			Log.d(TAG, "readDesAudioFile: 读取结束" + data);
+			return data;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			Log.d(TAG, "readDesAudioFile: 读取出错");
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 }

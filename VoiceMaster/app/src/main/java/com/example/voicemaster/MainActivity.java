@@ -162,15 +162,21 @@ public class MainActivity extends AppCompatActivity{
                 if(permission!= PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(this,new String[] {
                             Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                            Manifest.permission.LOCATION_HARDWARE,Manifest.permission.READ_PHONE_STATE,
-                            Manifest.permission.WRITE_SETTINGS,Manifest.permission.READ_EXTERNAL_STORAGE,
-                            Manifest.permission.RECORD_AUDIO,Manifest.permission.READ_CONTACTS},0x0010);
+                            Manifest.permission.LOCATION_HARDWARE,
+                            Manifest.permission.READ_PHONE_STATE,
+                            Manifest.permission.WRITE_SETTINGS,
+                            Manifest.permission.READ_EXTERNAL_STORAGE,
+                            Manifest.permission.READ_EXTERNAL_STORAGE,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.RECORD_AUDIO,
+                            Manifest.permission.READ_CONTACTS},0x0010);
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {

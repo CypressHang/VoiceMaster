@@ -5,7 +5,7 @@ import android.app.Application;
 import com.example.voicemaster.R;
 import com.iflytek.cloud.SpeechUtility;
 
-public class CypressApp extends Application {
+public class Cypress extends Application {
 
 	@Override
 	public void onCreate() {
@@ -17,7 +17,7 @@ public class CypressApp extends Application {
 		
 		// 注意： appid 必须和下载的SDK保持一致，否则会出现10407错误
 		
-		SpeechUtility.createUtility(CypressApp.this, "appid=" + getString(R.string.app_id));
+		SpeechUtility.createUtility(Cypress.this, "appid=" + getString(R.string.app_id));
 			
 		// 以下语句用于设置日志开关（默认开启），设置成false时关闭语音云SDK日志打印
 		// Setting.setShowLog(false);

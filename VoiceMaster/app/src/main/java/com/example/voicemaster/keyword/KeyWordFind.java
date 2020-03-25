@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.text.TextUtils;
@@ -50,7 +51,7 @@ public class KeyWordFind extends AppCompatActivity {
     // 接口密钥
     private static final String API_KEY = "dc49e97387e0581ab06b143ab10c447f";
     // 文本
-    private String TEXT = "王柏行好帅啊啊啊";
+    public static String TEXT = "王柏行好帅啊啊啊";
 
     private double threshold = 0.5;
 
@@ -82,6 +83,11 @@ public class KeyWordFind extends AppCompatActivity {
         btn_Key = (Button)findViewById(R.id.btn_key);
 
         initBtn();
+        initOriText();
+    }
+    private void initOriText(){
+        if(TEXT == null) TEXT = "王柏行掌握面向对象编程的思想，扎实的C++功底，熟练掌握VC++,VS.NET等开发工具";
+        et_oriText.setText(TEXT);
     }
     private void initBtn(){
         btn_Key.setOnClickListener(new View.OnClickListener() {

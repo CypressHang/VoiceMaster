@@ -18,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="讯飞听写示例"
+            android:text="语音转文字"
             android:textSize="30sp" />
 
         <ImageButton
@@ -52,8 +52,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="云端" >
-        </RadioButton>
+            android:text="在线"></RadioButton>
 
         <RadioButton
             android:id="@+id/iat_radioLocal"
@@ -98,19 +97,56 @@
             android:textSize="20sp" />
     </LinearLayout>
 
-    <Button
-        android:id="@+id/iat_recognize_stream"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="音频流识别"
-        android:textSize="20sp" />
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_chooseFile"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+            android:text="选择文件"
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/iat_recognize_stream"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+            android:text="音频流识别"
+            android:textSize="20sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_jumpKey"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="转到关键词分析" />
+
+        <Button
+            android:id="@+id/btn_jumpTranslation"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="转到翻译" />
+    </LinearLayout>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="上传联系人、词表，可以使云端识别联系人和词表更加准确，这里上传的内容对语义理解同样有效。"
+        android:text="上传联系人、词表，可以使识别联系人和词表更加准确。"
         android:textSize="@dimen/txt_size" />
 
     <LinearLayout
