@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.Menu;
 import android.widget.Button;
 
+import com.example.voicemaster.audio.SoundRecord;
 import com.example.voicemaster.keyword.KeyWordFind;
 import com.example.voicemaster.tool.VocalVerify;
 import com.example.voicemaster.tool.VoiceRead;
@@ -55,7 +56,7 @@ public class MainActivity extends AppCompatActivity{
         // 请勿在“=”与appid之间添加任何空字符或者转义符
         SpeechUtility.createUtility(this, SpeechConstant.APPID +"=5e6b5006");
 
-        mButton =(Button)findViewById(R.id.btn_voice);
+//        mButton =(Button)findViewById(R.id.btn_voice);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -121,6 +122,10 @@ public class MainActivity extends AppCompatActivity{
                     case R.id.nav_Translation:
                         Log.d(TAG, "onNavigationItemSelected: 打开翻译");
                         startActivity(new Intent(MainActivity.this, Translate.class));
+                        break;
+                    case R.id.nav_sound_record:
+                        Log.d(TAG, "onNavigationItemSelected: 打开录音功能");
+                        startActivity(new Intent(MainActivity.this, SoundRecord.class));
                         break;
 
 //            case R.id.nav_else_setting:

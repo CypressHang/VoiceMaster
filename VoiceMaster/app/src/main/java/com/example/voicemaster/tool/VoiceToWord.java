@@ -47,13 +47,15 @@ import com.iflytek.cloud.util.ResourceUtil;
 import com.example.voicemaster.speech.setting.VoiceToWordSetting;
 import com.example.voicemaster.speech.util.FucUtil;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 //import com.iflytek.cloud.param.MscKeys;
 
 public class VoiceToWord extends Activity implements OnClickListener{
-	private static String TAG = "IatDemo";
+	private static String TAG = "cypress";
+	public static File RecordSoundFile = null;
 	private static final int REQUEST_EXTERNAL_STORAGE = 1;
 	private static String[] PERMISSIONS_STORAGE = {
 			Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -175,10 +177,10 @@ public class VoiceToWord extends Activity implements OnClickListener{
 			Log.d(TAG, "onClick: 通过文件管理器读取手机上的文件");
 			Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
 			//intent.setType(“image/*”);//选择图片
-			intent.setType("audio/*"); //选择音频
+			//intent.setType("audio/*;*/*"); //选择音频
 			//intent.setType(“video/*”); //选择视频 （mp4 3gp 是android支持的视频格式）
 			//intent.setType(“video/*;image/*”);//同时选择视频和图片
-			//intent.setType("*/*");//无类型限制
+			intent.setType("*/*");//无类型限制
 			intent.addCategory(Intent.CATEGORY_OPENABLE);
 			startActivityForResult(intent, 1);
 			Log.d(TAG, "onClick: path = " + path);
@@ -192,8 +194,13 @@ public class VoiceToWord extends Activity implements OnClickListener{
 
 			// 设置音频来源为外部文件
 			if(path == null){
-				Toast.makeText(this, "请先选择文件", Toast.LENGTH_SHORT).show();
-				break;
+			    if(RecordSoundFile != null){
+			        path = RecordSoundFile.toString();
+                }
+			    else {
+                    Toast.makeText(this, "请先选择文件", Toast.LENGTH_SHORT).show();
+                    break;
+                }
 			}
 			verifyStoragePermissions(this);
 
