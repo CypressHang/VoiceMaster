@@ -205,10 +205,10 @@ public class VoiceToWord extends Activity implements OnClickListener{
 			verifyStoragePermissions(this);
 
 			mIat.setParameter(SpeechConstant.AUDIO_SOURCE, "-1");
-			// 也可以像以下这样直接设置音频文件路径识别（要求设置文件在sdcard上的全路径）：
+
+            // 也可以像以下这样直接设置音频文件路径识别（要求设置文件在sdcard上的全路径）：
 //			 mIat.setParameter(SpeechConstant.AUDIO_SOURCE, "-2");
 //			 mIat.setParameter(SpeechConstant.ASR_SOURCE_PATH, "sdcard/XXX/XXX.pcm");
-//			mIat.setParameter(SpeechConstant.ASR_SOURCE_PATH, path);
 			ret = mIat.startListening(mRecognizerListener);
 			if (ret != ErrorCode.SUCCESS) {
 				showTip("识别失败,错误码：" + ret+",请点击网址https://www.xfyun.cn/document/error-code查询解决方案");
@@ -475,8 +475,16 @@ public class VoiceToWord extends Activity implements OnClickListener{
 		mIat.setParameter(SpeechConstant.ASR_PTT, mSharedPreferences.getString("iat_punc_preference", "1"));
 		
 		// 设置音频保存路径，保存音频格式支持pcm、wav，设置路径为sd卡请注意WRITE_EXTERNAL_STORAGE权限
+
+        File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath(),"voice_master");
+        if(!dir.exists()){
+            dir.mkdirs();
+        }
+//        file = new File(dir , System.currentTimeMillis()+"Bai.pcm");
+//		mIat.setParameter(SpeechConstant.AUDIO_FORMAT,"pcm");
 		mIat.setParameter(SpeechConstant.AUDIO_FORMAT,"wav");
-		mIat.setParameter(SpeechConstant.ASR_AUDIO_PATH, Environment.getExternalStorageDirectory()+"/msc/iat.wav");
+		mIat.setParameter(SpeechConstant.ASR_AUDIO_PATH, Environment.getExternalStorageDirectory()+"/voice_master/" + System.currentTimeMillis() + "Bai.wav");
+//		mIat.setParameter(SpeechConstant.ASR_AUDIO_PATH, Environment.getExternalStorageDirectory()+"/msc/iat.wav");
 	}
 
 	private String getResourcePath(){

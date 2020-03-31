@@ -149,8 +149,8 @@ public class SoundRecord extends AppCompatActivity implements View.OnClickListen
         Log.d(TAG,"开始录音");
         //16K采集率
         int frequency = 16000;
-        //格式
-        int channelConfiguration = AudioFormat.CHANNEL_CONFIGURATION_MONO;
+        //格式  单声道
+        int channelConfiguration = AudioFormat.CHANNEL_IN_MONO;
         //16Bit
         int audioEncoding = AudioFormat.ENCODING_PCM_16BIT;
         //生成PCM文件
@@ -159,7 +159,7 @@ public class SoundRecord extends AppCompatActivity implements View.OnClickListen
             dir.mkdirs();
         }
         file = new File(dir , System.currentTimeMillis()+"Bai.pcm");
-        Log.d(TAG,"生成文件");
+        Log.d(TAG,"生成文件，名字是: " + file.toString());
         //如果存在，就先删除再创建
         if (file.exists())
             file.delete();
@@ -234,6 +234,10 @@ public class SoundRecord extends AppCompatActivity implements View.OnClickListen
         }
         file.delete();
         printLog("文件删除成功");
+    }
+
+    //初始化转写
+    private void init(){
     }
 
 }
