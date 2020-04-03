@@ -46,6 +46,6 @@ dependencies {
     implementation files('libs/Msc.jar')
     implementation 'org.jetbrains:annotations-java5:15.0'
     implementation files('libs/gson-2.3.1.jar')
-    implementation files('libs/lfasr-sdk-client-2.0.0.1006.jar')
-    implementation files('libs/fastjson-1.2.21.jar')
+    implementation files('libs/lfasr-sdk-client-2.0.0.1007.jar')
+    implementation files('libs/bdasr_V3_20191210_81acdf5.jar')
 }

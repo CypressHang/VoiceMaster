@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.widget.Button;
 
 import com.example.voicemaster.audio.SoundRecord;
+import com.example.voicemaster.audio.bdTest;
 import com.example.voicemaster.keyword.KeyWordFind;
 import com.example.voicemaster.tool.VocalVerify;
 import com.example.voicemaster.tool.VoiceRead;
@@ -126,6 +127,10 @@ public class MainActivity extends AppCompatActivity{
                     case R.id.nav_sound_record:
                         Log.d(TAG, "onNavigationItemSelected: 打开录音功能");
                         startActivity(new Intent(MainActivity.this, SoundRecord.class));
+                        break;
+                    case R.id.nav_long:
+                        Log.d(TAG, "onNavigationItemSelected: 打开长语音功能");
+                        startActivity(new Intent(MainActivity.this, bdTest.class));
                         break;
 
 //            case R.id.nav_else_setting:

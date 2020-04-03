@@ -35,12 +35,12 @@
         android:textColor="@android:color/white"/>
 
     <Button
-        android:id="@+id/jump_word"
+        android:id="@+id/toWord"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:background="@drawable/button_bg"
-        android:text="直接跳到语音转文字"
+        android:text="识别录音"
         android:textColor="@android:color/white"/>
 
     <Button

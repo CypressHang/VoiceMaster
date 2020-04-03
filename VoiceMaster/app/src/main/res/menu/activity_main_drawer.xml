@@ -55,9 +55,9 @@
                 android:icon="@drawable/ic_menu_weather"
                 android:title="录音功能" />
             <item
-                android:id="@+id/nav_use_check_subway"
+                android:id="@+id/nav_long"
                 android:icon="@drawable/ic_menu_subway"
-                android:title="@string/menu_use_check_subway" />
+                android:title="长语音" />
             <item
                 android:id="@+id/nav_use_tools"
                 android:icon="@drawable/ic_menu_tools"

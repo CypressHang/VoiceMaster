@@ -1,5 +1,6 @@
 package com.example.voicemaster.audio;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -10,6 +11,7 @@ import android.media.AudioTrack;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -21,8 +23,14 @@ import android.widget.Toast;
 
 import com.example.voicemaster.MainActivity;
 import com.example.voicemaster.R;
-import com.example.voicemaster.tool.VocalVerify;
-import com.example.voicemaster.tool.VoiceToWord;
+import com.alibaba.fastjson.JSON;
+import com.iflytek.msp.cpdb.lfasr.exception.LfasrException;
+import com.iflytek.msp.cpdb.lfasr.model.LfasrType;
+import com.iflytek.msp.cpdb.lfasr.model.Message;
+import com.iflytek.msp.cpdb.lfasr.model.ProgressStatus;
+import com.iflytek.msp.cpdb.lfasr.client.LfasrClientImp;
+
+import org.apache.log4j.PropertyConfigurator;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -35,6 +43,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.HashMap;
+
+
 
 public class SoundRecord extends AppCompatActivity implements View.OnClickListener {
 
@@ -59,13 +70,40 @@ public class SoundRecord extends AppCompatActivity implements View.OnClickListen
     //pcm文件
     private File file;
 
+    // 原始音频存放地址
+    private static String local_file = "./resource/audio/lfasr.wav";
+
+    private LfasrClientImp lc = null;
+
+    /*
+     * 转写类型选择：标准版和电话版(旧版本, 不建议使用)分别为：
+     * LfasrType.LFASR_STANDARD_RECORDED_AUDIO 和 LfasrType.LFASR_TELEPHONY_RECORDED_AUDIO
+     * */
+    private static final LfasrType type = LfasrType.LFASR_STANDARD_RECORDED_AUDIO;
+
+    // 等待时长（秒）
+    private static int sleepSecond = 10;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sound_record);
 
+//        PropertyConfigurator.configure("src/log4j.properties");
+        // 初始化LFASRClient实例
+        try {
+            lc = LfasrClientImp.initLfasrClient();
+        } catch (LfasrException e) {
+            // 初始化异常，解析异常描述信息
+            Message initMsg = JSON.parseObject(e.getMessage(), Message.class);
+            System.out.println("ecode=" + initMsg.getErr_no());
+            System.out.println("failed=" + initMsg.getFailed());
+        }
+
         initView();
+
     }
+
     //初始化View
     private void initView() {
 
@@ -80,7 +118,7 @@ public class SoundRecord extends AppCompatActivity implements View.OnClickListen
         playAudio.setOnClickListener(this);
         deleteAudio = (Button) findViewById(R.id.deleteAudio);
         deleteAudio.setOnClickListener(this);
-        jumpWord = (Button) findViewById(R.id.jump_word);
+        jumpWord = (Button) findViewById(R.id.toWord);
         jumpWord.setOnClickListener(this);
     }
 
@@ -110,15 +148,15 @@ public class SoundRecord extends AppCompatActivity implements View.OnClickListen
                 ButtonEnabled(true, false, false);
                 printLog("播放录音");
                 break;
-            case R.id.jump_word:
+            case R.id.toWord:
                 if(file == null ){
                     Log.d(TAG, "onClick: 还没创建文件呢，请先录音！");
                     Toast.makeText(this, "还没创建文件呢，请先录音！", Toast.LENGTH_SHORT).show();
                     break;
                 }
-                VoiceToWord.RecordSoundFile = file;
                 Toast.makeText(this, "文件路径是" + file.toString(), Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(SoundRecord.this, VoiceToWord.class));
+                local_file = file.toString();
+                toWord();
                 break;
             case R.id.deleteAudio:
                 deleFile();
@@ -236,8 +274,93 @@ public class SoundRecord extends AppCompatActivity implements View.OnClickListen
         printLog("文件删除成功");
     }
 
-    //初始化转写
-    private void init(){
-    }
+    //转写
+    private void toWord(){
+        // 获取上传任务ID
+        String task_id = "";
+        HashMap<String, String> params = new HashMap<String, String>();
+        params.put("has_participle", "true");
+        //合并后标准版开启电话版功能
+        //params.put("has_seperate", "true");
+        try {
+            // 上传音频文件
+            Message uploadMsg = lc.lfasrUpload(local_file, type, params);
 
+            // 判断返回值
+            int ok = uploadMsg.getOk();
+            if (ok == 0) {
+                // 创建任务成功
+                task_id = uploadMsg.getData();
+                System.out.println("task_id=" + task_id);
+            } else {
+                // 创建任务失败-服务端异常
+                System.out.println("ecode=" + uploadMsg.getErr_no());
+                System.out.println("failed=" + uploadMsg.getFailed());
+            }
+        } catch (LfasrException e) {
+            // 上传异常，解析异常描述信息
+            Message uploadMsg = JSON.parseObject(e.getMessage(), Message.class);
+            System.out.println("ecode=" + uploadMsg.getErr_no());
+            System.out.println("failed=" + uploadMsg.getFailed());
+        }
+
+        // 循环等待音频处理结果
+        while (true) {
+            try {
+                // 等待20s在获取任务进度
+                Thread.sleep(sleepSecond * 1000);
+                System.out.println("waiting ...");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            try {
+                // 获取处理进度
+                Message progressMsg = lc.lfasrGetProgress(task_id);
+
+                // 如果返回状态不等于0，则任务失败
+                if (progressMsg.getOk() != 0) {
+                    System.out.println("task was fail. task_id:" + task_id);
+                    System.out.println("ecode=" + progressMsg.getErr_no());
+                    System.out.println("failed=" + progressMsg.getFailed());
+
+                    return;
+                } else {
+                    ProgressStatus progressStatus = JSON.parseObject(progressMsg.getData(), ProgressStatus.class);
+                    if (progressStatus.getStatus() == 9) {
+                        // 处理完成
+                        System.out.println("task was completed. task_id:" + task_id);
+                        break;
+                    } else {
+                        // 未处理完成
+                        System.out.println("task is incomplete. task_id:" + task_id + ", status:" + progressStatus.getDesc());
+                        continue;
+                    }
+                }
+            } catch (LfasrException e) {
+                // 获取进度异常处理，根据返回信息排查问题后，再次进行获取
+                Message progressMsg = JSON.parseObject(e.getMessage(), Message.class);
+                System.out.println("ecode=" + progressMsg.getErr_no());
+                System.out.println("failed=" + progressMsg.getFailed());
+            }
+        }
+
+        // 获取任务结果
+        try {
+            Message resultMsg = lc.lfasrGetResult(task_id);
+            // 如果返回状态等于0，则获取任务结果成功
+            if (resultMsg.getOk() == 0) {
+                // 打印转写结果
+                System.out.println(resultMsg.getData());
+            } else {
+                // 获取任务结果失败
+                System.out.println("ecode=" + resultMsg.getErr_no());
+                System.out.println("failed=" + resultMsg.getFailed());
+            }
+        } catch (LfasrException e) {
+            // 获取结果异常处理，解析异常描述信息
+            Message resultMsg = JSON.parseObject(e.getMessage(), Message.class);
+            System.out.println("ecode=" + resultMsg.getErr_no());
+            System.out.println("failed=" + resultMsg.getFailed());
+        }
+    }
 }
