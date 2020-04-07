@@ -12,6 +12,17 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        externalNativeBuild {
+            cmake {
+                cppFlags "-frtti -fexceptions"
+            }
+        }
+
+        ndk {
+            abiFilters "arm64-v8a","armeabi-v7a","x86"
+        }
+
     }
 
     buildTypes {
@@ -27,6 +38,13 @@ android {
             }
         }
     }
+
+    externalNativeBuild {
+        cmake {
+            path "CMakeLists.txt"
+        }
+    }
+
 
 }
 
@@ -48,4 +66,5 @@ dependencies {
     implementation files('libs/gson-2.3.1.jar')
     implementation files('libs/lfasr-sdk-client-2.0.0.1007.jar')
     implementation files('libs/bdasr_V3_20191210_81acdf5.jar')
+    implementation files('libs/fmod.jar')
 }

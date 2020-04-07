@@ -3,6 +3,8 @@ package com.example.voicemaster.audio;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -25,6 +27,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class bdTest extends AppCompatActivity implements com.baidu.speech.EventListener {
+    private static final String TAG = "cypress" ;
     protected TextView txtResult;
     protected Button btn;
     protected Button stopBtn;
@@ -102,6 +105,7 @@ public class bdTest extends AppCompatActivity implements com.baidu.speech.EventL
     }
     private void initView() {
         txtResult = findViewById(R.id.txtResult);
+        txtResult.setMovementMethod(ScrollingMovementMethod.getInstance());
         btn = findViewById(R.id.btn);
         stopBtn = findViewById(R.id.btn_stop);
     }
@@ -119,7 +123,7 @@ public class bdTest extends AppCompatActivity implements com.baidu.speech.EventL
             if (PackageManager.PERMISSION_GRANTED != ContextCompat.checkSelfPermission(this, perm)) {
                 toApplyList.add(perm);
                 //进入到这里代表没有权限.
-
+                Log.d(TAG, "initPermission: 没权限");
             }
         }
         String tmpList[] = new String[toApplyList.size()];
