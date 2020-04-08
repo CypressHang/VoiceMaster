@@ -36,6 +36,8 @@ public class ChangeVoive extends AppCompatActivity {
     public String path = null;
 
     private Button btn_choose;
+    private Button btn_record;
+    private Button btn_stop;
 
     private String[] permissions = new String[]{
             Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -56,6 +58,8 @@ public class ChangeVoive extends AppCompatActivity {
         }
 
         btn_choose = (Button) findViewById(R.id.btn_CVchoose);
+        btn_record = (Button) findViewById(R.id.btn_recordStart);
+        btn_stop = (Button) findViewById(R.id.btn_stopRecord);
 
         btn_choose.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,6 +71,31 @@ public class ChangeVoive extends AppCompatActivity {
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
                 startActivityForResult(intent, 1);
                 Log.d(TAG, "onClick: path = " + path);
+            }
+        });
+
+        btn_record.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "voice_master");
+                if (!dir.exists()) {
+                    dir.mkdirs();
+                }
+                File fileWav = new File(dir, System.currentTimeMillis() + "BaiVC.wav");
+                File filePcm = new File(dir, System.currentTimeMillis() + "BaiVC.pcm");
+                Log.d(TAG, "生成文件，名字是: " + fileWav.toString());
+                String storePathWav = fileWav.toString();
+                String storePathPcm = filePcm.toString();
+                path = storePathWav;
+                AudioRecordUtils.getInstance().startRecord(storePathPcm,storePathWav);
+            }
+        });
+
+        btn_stop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AudioRecordUtils.getInstance().stopRecord();
+                Toast.makeText(ChangeVoive.this, "录音完毕 ： " + path, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -112,6 +141,7 @@ public class ChangeVoive extends AppCompatActivity {
             File file = new File(path);
             if (!file.exists()) {
                 Log.e("Main", "没有文件");
+                Toast.makeText(this, "文件是不存在", Toast.LENGTH_SHORT).show();
                 return;
             }
             switch (view.getId()) {

@@ -1,17 +1,12 @@
 package com.example.voicemaster.audio;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioRecord;
 import android.media.AudioTrack;
-import android.media.MediaPlayer;
 import android.media.MediaRecorder;
-import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -21,7 +16,6 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.voicemaster.MainActivity;
 import com.example.voicemaster.R;
 import com.alibaba.fastjson.JSON;
 import com.iflytek.msp.cpdb.lfasr.exception.LfasrException;
@@ -30,21 +24,17 @@ import com.iflytek.msp.cpdb.lfasr.model.Message;
 import com.iflytek.msp.cpdb.lfasr.model.ProgressStatus;
 import com.iflytek.msp.cpdb.lfasr.client.LfasrClientImp;
 
-import org.apache.log4j.PropertyConfigurator;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
-
 
 
 public class SoundRecord extends AppCompatActivity implements View.OnClickListener {
@@ -63,6 +53,10 @@ public class SoundRecord extends AppCompatActivity implements View.OnClickListen
     private Button deleteAudio;
     //跳转
     private Button jumpWord;
+    //转wav
+    private Button toWav;
+    //隐私模式
+    private Button privateMod;
 
     private ScrollView mScrollView;
     private TextView tv_audio_succeess;
@@ -71,9 +65,14 @@ public class SoundRecord extends AppCompatActivity implements View.OnClickListen
     private File file;
 
     // 原始音频存放地址
-    private static String local_file = "./resource/audio/lfasr.wav";
+    private static String local_file = "./resource/audio/cypress.wav";
 
     private LfasrClientImp lc = null;
+
+    /**
+     * pcm格式转wav格式工具类
+     */
+    private PcmToWavUtil pcmToWavUtil = new PcmToWavUtil();
 
     /*
      * 转写类型选择：标准版和电话版(旧版本, 不建议使用)分别为：
@@ -83,6 +82,9 @@ public class SoundRecord extends AppCompatActivity implements View.OnClickListen
 
     // 等待时长（秒）
     private static int sleepSecond = 10;
+
+    //采样率
+    private int frequency = 16000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,8 +120,12 @@ public class SoundRecord extends AppCompatActivity implements View.OnClickListen
         playAudio.setOnClickListener(this);
         deleteAudio = (Button) findViewById(R.id.deleteAudio);
         deleteAudio.setOnClickListener(this);
-        jumpWord = (Button) findViewById(R.id.toWord);
+        jumpWord = (Button) findViewById(R.id.toChange);
         jumpWord.setOnClickListener(this);
+        toWav = (Button) findViewById(R.id.btn_toWav);
+        toWav.setOnClickListener(this);
+        privateMod = (Button) findViewById(R.id.btn_private);
+        privateMod.setOnClickListener(this);
     }
 
     //点击事件
@@ -131,7 +137,7 @@ public class SoundRecord extends AppCompatActivity implements View.OnClickListen
                     @Override
                     public void run() {
                         StartRecord();
-                        Log.d(TAG,"start");
+                        Log.d(TAG, "start");
                     }
                 });
                 thread.start();
@@ -145,21 +151,40 @@ public class SoundRecord extends AppCompatActivity implements View.OnClickListen
                 break;
             case R.id.playAudio:
                 PlayRecord();
-                ButtonEnabled(true, false, false);
+                ButtonEnabled(true, false, true);
                 printLog("播放录音");
                 break;
-            case R.id.toWord:
-                if(file == null ){
+            case R.id.btn_toWav:
+                if (file == null) {
                     Log.d(TAG, "onClick: 还没创建文件呢，请先录音！");
                     Toast.makeText(this, "还没创建文件呢，请先录音！", Toast.LENGTH_SHORT).show();
                     break;
                 }
-                Toast.makeText(this, "文件路径是" + file.toString(), Toast.LENGTH_SHORT).show();
-                local_file = file.toString();
-//                toWord();
+                pcmToWav(file.toString());
+                printLog("转换成wav");
+                break;
+            case R.id.toChange:
+                if (file == null) {
+                    Log.d(TAG, "onClick: 还没创建文件呢，请先录音！");
+                    Toast.makeText(this, "还没创建文件呢，请先录音！", Toast.LENGTH_SHORT).show();
+                    break;
+                }
+                printLog("文件路径是" + file.toString());
                 break;
             case R.id.deleteAudio:
                 deleFile();
+                printLog("删除录音");
+                break;
+            case R.id.btn_private:
+                if (frequency == 16000) {
+                    frequency = 8000;
+                    printLog("开启隐私模式");
+                } else if (frequency == 8000) {
+                    frequency = 16000;
+                    printLog("正常模式");
+                } else {
+                    frequency = 16000;
+                }
                 break;
         }
     }
@@ -184,29 +209,30 @@ public class SoundRecord extends AppCompatActivity implements View.OnClickListen
 
     //开始录音
     public void StartRecord() {
-        Log.d(TAG,"开始录音");
-        //16K采集率
-        int frequency = 16000;
+        Log.d(TAG, "开始录音");
+        //16K/8K采集率
+//        frequency = 16000;
         //格式  单声道
         int channelConfiguration = AudioFormat.CHANNEL_IN_MONO;
-        //16Bit
+        // 16Bit /8Bit
+//        int audioEncoding = AudioFormat.ENCODING_PCM_8BIT;
         int audioEncoding = AudioFormat.ENCODING_PCM_16BIT;
         //生成PCM文件
-        File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath(),"voice_master");
-        if(!dir.exists()){
+        File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "voice_master");
+        if (!dir.exists()) {
             dir.mkdirs();
         }
-        file = new File(dir , System.currentTimeMillis()+"Bai.pcm");
-        Log.d(TAG,"生成文件，名字是: " + file.toString());
+        file = new File(dir, System.currentTimeMillis() + "Bai.pcm");
+        Log.d(TAG, "生成文件，名字是: " + file.toString());
         //如果存在，就先删除再创建
         if (file.exists())
             file.delete();
-        Log.d(TAG,"删除已经存在的文件");
+        Log.d(TAG, "删除已经存在的文件");
         try {
             file.createNewFile();
-            Log.d(TAG,"创建文件，路径是" + file.toString());
+            Log.d(TAG, "创建文件，路径是" + file.toString());
         } catch (IOException e) {
-            Log.d(TAG,"未能创建");
+            Log.d(TAG, "未能创建");
             throw new IllegalStateException("未能创建" + file.toString());
         }
         try {
@@ -236,7 +262,7 @@ public class SoundRecord extends AppCompatActivity implements View.OnClickListen
 
     //播放文件
     public void PlayRecord() {
-        if(file == null){
+        if (file == null) {
             return;
         }
         //读取文件
@@ -267,7 +293,7 @@ public class SoundRecord extends AppCompatActivity implements View.OnClickListen
 
     //删除文件
     private void deleFile() {
-        if(file == null || !file.exists()){
+        if (file == null || !file.exists()) {
             return;
         }
         file.delete();
@@ -275,7 +301,7 @@ public class SoundRecord extends AppCompatActivity implements View.OnClickListen
     }
 
     //转写
-    private void toWord(){
+    private void toWord() {
         // 获取上传任务ID
         String task_id = "";
         HashMap<String, String> params = new HashMap<String, String>();
@@ -284,6 +310,7 @@ public class SoundRecord extends AppCompatActivity implements View.OnClickListen
         //params.put("has_seperate", "true");
         try {
             // 上传音频文件
+//            Message uploadMsg = lc.lfasrUpload(local_file, type, params);
             Message uploadMsg = lc.lfasrUpload(local_file, type, params);
 
             // 判断返回值
@@ -362,5 +389,12 @@ public class SoundRecord extends AppCompatActivity implements View.OnClickListen
             System.out.println("ecode=" + resultMsg.getErr_no());
             System.out.println("failed=" + resultMsg.getFailed());
         }
+    }
+
+    //pcm转wav
+    private void pcmToWav(String path) {
+        //按原路径把音频文件后缀改一下;
+        final String outpath = path.replace(".pcm", ".wav");
+        pcmToWavUtil.pcmToWav(path, outpath);
     }
 }

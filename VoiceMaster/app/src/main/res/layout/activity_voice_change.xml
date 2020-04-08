@@ -8,24 +8,31 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <Button
+            android:id="@+id/btn_CVchoose"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="选择文件" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/btn_CVchoose"
+                android:id="@+id/btn_recordStart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="选择文件" />
+                android:text="开始录音" />
 
             <Button
-                android:id="@+id/button2"
+                android:id="@+id/btn_stopRecord"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Button" />
+                android:text="停止录音" />
         </LinearLayout>
     </LinearLayout>
 
