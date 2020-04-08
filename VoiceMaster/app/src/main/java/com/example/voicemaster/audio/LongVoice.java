@@ -10,7 +10,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import com.example.voicemaster.R;
 
-import com.baidu.speech.EventListener;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -26,7 +25,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class bdTest extends AppCompatActivity implements com.baidu.speech.EventListener {
+public class LongVoice extends AppCompatActivity implements com.baidu.speech.EventListener {
     private static final String TAG = "cypress" ;
     protected TextView txtResult;
     protected Button btn;
@@ -55,7 +54,7 @@ public class bdTest extends AppCompatActivity implements com.baidu.speech.EventL
         initView();
         initPermission();
 
-        asr = EventManagerFactory.create(bdTest.this,"asr");//注册自己的输出事件类
+        asr = EventManagerFactory.create(LongVoice.this,"asr");//注册自己的输出事件类
         asr.registerListener(this);//// 调用 EventListener 中 onEvent方法
 
         btn.setOnClickListener(new View.OnClickListener() {

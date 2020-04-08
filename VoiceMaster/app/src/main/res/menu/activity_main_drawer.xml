@@ -59,9 +59,9 @@
                 android:icon="@drawable/ic_menu_subway"
                 android:title="长语音" />
             <item
-                android:id="@+id/nav_use_tools"
+                android:id="@+id/nav_voice_change"
                 android:icon="@drawable/ic_menu_tools"
-                android:title="@string/menu_use_tools" />
+                android:title="声音处理" />
         </menu>
     </item>
 

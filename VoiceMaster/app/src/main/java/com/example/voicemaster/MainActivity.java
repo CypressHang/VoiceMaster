@@ -12,7 +12,7 @@ import android.view.Menu;
 import android.widget.Button;
 
 import com.example.voicemaster.audio.SoundRecord;
-import com.example.voicemaster.audio.bdTest;
+import com.example.voicemaster.audio.LongVoice;
 import com.example.voicemaster.keyword.KeyWordFind;
 import com.example.voicemaster.tool.VocalVerify;
 import com.example.voicemaster.tool.VoiceRead;
@@ -20,6 +20,7 @@ import com.example.voicemaster.tool.VoiceToWord;
 import com.example.voicemaster.tool.VoiceTest;
 import com.example.voicemaster.tool.VoiceAwake;
 import com.example.voicemaster.translate.Translate;
+import com.example.voicemaster.voicechange.ChangeVoive;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
@@ -130,9 +131,12 @@ public class MainActivity extends AppCompatActivity{
                         break;
                     case R.id.nav_long:
                         Log.d(TAG, "onNavigationItemSelected: 打开长语音功能");
-                        startActivity(new Intent(MainActivity.this, bdTest.class));
+                        startActivity(new Intent(MainActivity.this, LongVoice.class));
                         break;
-
+                    case R.id.nav_voice_change:
+                        Log.d(TAG, "onNavigationItemSelected: 打开声音处理功能");
+                        startActivity(new Intent(MainActivity.this, ChangeVoive.class));
+                        break;
 //            case R.id.nav_else_setting:
 //                startActivity(new Intent(this, SettingActivity.class));
 //                break;

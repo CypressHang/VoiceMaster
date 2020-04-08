@@ -156,7 +156,7 @@ public class SoundRecord extends AppCompatActivity implements View.OnClickListen
                 }
                 Toast.makeText(this, "文件路径是" + file.toString(), Toast.LENGTH_SHORT).show();
                 local_file = file.toString();
-                toWord();
+//                toWord();
                 break;
             case R.id.deleteAudio:
                 deleFile();

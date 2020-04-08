@@ -140,10 +140,14 @@
             android:screenOrientation="fullSensor"
             android:usesCleartextTraffic="true"/>
         <activity
-            android:name=".audio.bdTest"
+            android:name=".audio.LongVoice"
             android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|fontScale"
             android:screenOrientation="fullSensor"
             android:usesCleartextTraffic="true"/>
+        <activity
+            android:name=".voicechange.ChangeVoive"
+            android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|fontScale"
+            android:screenOrientation="fullSensor" />
     </application>
 
 
