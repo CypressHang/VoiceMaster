@@ -20,6 +20,8 @@ import com.example.voicemaster.tool.VoiceToWord;
 import com.example.voicemaster.tool.VoiceTest;
 import com.example.voicemaster.tool.VoiceAwake;
 import com.example.voicemaster.translate.Translate;
+import com.example.voicemaster.ui.AboutActivity;
+import com.example.voicemaster.ui.SettingActivity;
 import com.example.voicemaster.voicechange.ChangeVoive;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -54,11 +56,8 @@ public class MainActivity extends AppCompatActivity{
 
         requestPermissions();
 
-        // 将“12345678”替换成您申请的APPID，申请地址：http://www.xfyun.cn
         // 请勿在“=”与appid之间添加任何空字符或者转义符
         SpeechUtility.createUtility(this, SpeechConstant.APPID +"=5e6b5006");
-
-//        mButton =(Button)findViewById(R.id.btn_voice);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -84,13 +83,6 @@ public class MainActivity extends AppCompatActivity{
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
-//        mButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(MainActivity.this, VoiceToWord.class);
-//                startActivity(intent);
-//            }
-//        });
 
         //导航栏选择
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -137,12 +129,14 @@ public class MainActivity extends AppCompatActivity{
                         Log.d(TAG, "onNavigationItemSelected: 打开声音处理功能");
                         startActivity(new Intent(MainActivity.this, ChangeVoive.class));
                         break;
-//            case R.id.nav_else_setting:
-//                startActivity(new Intent(this, SettingActivity.class));
-//                break;
-//            case R.id.nav_else_about:
-//                startActivity(new Intent(this, AboutActivity.class));
-//                break;
+                    case R.id.nav_else_setting:
+                        Log.d(TAG, "onNavigationItemSelected: 打开声设置");
+                        startActivity(new Intent(MainActivity.this, SettingActivity.class));
+                        break;
+                    case R.id.nav_else_about:
+                        Log.d(TAG, "onNavigationItemSelected: 打开关于");
+                        startActivity(new Intent(MainActivity.this, AboutActivity.class));
+                        break;
                 }
                 drawer.closeDrawer(GravityCompat.START);
                 return true;

@@ -15,7 +15,8 @@ import com.example.voicemaster.R;
  */
 public class VoiceToWordSetting extends PreferenceActivity implements OnPreferenceChangeListener {
 	
-	public static final String PREFER_NAME = "com.iflytek.setting";
+	public static final String PREFER_NAME = "cypress.setting";
+//	public static final String PREFER_NAME = "com.iflytek.setting";
 	private EditTextPreference mVadbosPreference;
 	private EditTextPreference mVadeosPreference;
 	

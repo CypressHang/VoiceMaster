@@ -21,6 +21,7 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
@@ -138,7 +139,8 @@ public class VoiceToWord extends Activity implements OnClickListener{
 	public void onClick(View view) {		
 		if( null == mIat ){
 			// 创建单例失败，与 21001 错误为同样原因，参考 http://bbs.xfyun.cn/forum.php?mod=viewthread&tid=9688
-			this.showTip( "创建对象失败，请确认 libmsc.so 放置正确，\n 且有调用 createUtility 进行初始化" );
+			this.showTip( "创建对象失败" );
+//			this.showTip( "创建对象失败，请确认 libmsc.so 放置正确，\n 且有调用 createUtility 进行初始化" );
 			return;
 		}
 		
@@ -155,17 +157,21 @@ public class VoiceToWord extends Activity implements OnClickListener{
 			mIatResults.clear();
 			// 设置参数
 			setParam();
-			boolean isShowDialog = mSharedPreferences.getBoolean(getString(R.string.pref_key_iat_show), true);
+			boolean isShowDialog = mSharedPreferences.getBoolean(getString(R.string.pref_key_iat_show), false);
 			if (isShowDialog) {
 				// 显示听写对话框
 				mIatDialog.setListener(mRecognizerDialogListener);
 				mIatDialog.show();
 				showTip(getString(R.string.text_begin));
+				//获取字体所在的控件，设置为"",隐藏字体，
+				TextView txt = (TextView)mIatDialog.getWindow().getDecorView().findViewWithTag("textlink");
+				txt.setText("");
 			} else {
 				// 不显示听写对话框
 				ret = mIat.startListening(mRecognizerListener);
 				if (ret != ErrorCode.SUCCESS) {
-					showTip("听写失败,错误码：" + ret+",请点击网址https://www.xfyun.cn/document/error-code查询解决方案");
+					showTip("听写失败");
+//					showTip("听写失败,错误码：" + ret+",请点击网址https://www.xfyun.cn/document/error-code查询解决方案");
 				} else {
 					showTip(getString(R.string.text_begin));
 				}
@@ -211,7 +217,8 @@ public class VoiceToWord extends Activity implements OnClickListener{
 //			 mIat.setParameter(SpeechConstant.ASR_SOURCE_PATH, "sdcard/XXX/XXX.pcm");
 			ret = mIat.startListening(mRecognizerListener);
 			if (ret != ErrorCode.SUCCESS) {
-				showTip("识别失败,错误码：" + ret+",请点击网址https://www.xfyun.cn/document/error-code查询解决方案");
+				showTip("识别失败");
+//				showTip("识别失败,错误码：" + ret+",请点击网址https://www.xfyun.cn/document/error-code查询解决方案");
 			} else {
 //				byte[] audioData = FucUtil.readAudioFile(VoiceToWord.this, "isetest.wav");
 				byte[] audioData = FucUtil.readDesAudioFile(VoiceToWord.this, path);
@@ -258,7 +265,8 @@ public class VoiceToWord extends Activity implements OnClickListener{
 			mIat.setParameter(SpeechConstant.TEXT_ENCODING, "utf-8");
 			ret = mIat.updateLexicon("userword", contents, mLexiconListener);
 			if (ret != ErrorCode.SUCCESS)
-				showTip("上传热词失败,错误码：" + ret+",请点击网址https://www.xfyun.cn/document/error-code查询解决方案");
+				showTip("上传热词失败");
+//				showTip("上传热词失败,错误码：" + ret+"");
 			break;
 		//跳转到关键词分析
 		case R.id.btn_jumpKey:
@@ -294,7 +302,8 @@ public class VoiceToWord extends Activity implements OnClickListener{
 		public void onInit(int code) {
 			Log.d(TAG, "SpeechRecognizer init() code = " + code);
 			if (code != ErrorCode.SUCCESS) {
-				showTip("初始化失败，错误码：" + code+",请点击网址https://www.xfyun.cn/document/error-code查询解决方案");
+				showTip("初始化失败");
+//				showTip("初始化失败，错误码：" + code+",请点击网址https://www.xfyun.cn/document/error-code查询解决方案");
 			}
 		}
 	};

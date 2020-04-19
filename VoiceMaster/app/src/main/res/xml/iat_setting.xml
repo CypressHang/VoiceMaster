@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" > 
+<PreferenceScreen xmlns:tools="http://schemas.android.com/tools"
+	xmlns:android="http://schemas.android.com/apk/res/android" >
     
     <ListPreference
         android:key="iat_language_preference"
@@ -30,10 +31,14 @@
         android:entryValues="@array/punc_values"
         android:summary="默认值：有标点 "
         android:defaultValue="1"  />
-    
 	<CheckBoxPreference
+		android:defaultValue="false"
 		android:key="@string/pref_key_iat_show"
-		android:title="@string/pref_title_iat_show"
-		android:defaultValue="true" />
+		android:title="@string/pref_title_iat_show" />
+
+	<!--	<CheckBoxPreference-->
+<!--		android:defaultValue="false"-->
+<!--		android:key="@string/pref_key_iat_show"-->
+<!--		android:title="@string/pref_title_iat_show" />-->
 </PreferenceScreen>
 
