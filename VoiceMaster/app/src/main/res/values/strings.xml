@@ -283,50 +283,36 @@
 
     <!--关于相关-->
     <string name="app_version">Version %1$s</string>
-    <string name="about_drysister">关于DrySister</string>
-    <string name="about_drysister_detail">
-        DrySister，直译干妹子，是小猪2016年写的Android基础入门教程附带的实战项目，
-        项目开源，遵循GPL v3协议，
-        \n\n仓库地址：https://github.com/coder-pig/DrySister
-        \n\n前期代码实现有详细的实现讲解，后面可能只说下遇到的问题以及难点。妹子源会慢慢增加，
-        除此之外还会添加一些新的小工具，敬请期待！项目仅用于技术交流学习，请勿用于商业用途！
-        \n\n如果你在使用过程中有任何建议或者大胆的想法，
-        \n欢迎加QQ群：518568422 进行反馈，
-        \n或者在酷安评论区留言与小猪激烈摔♂跤；
-        \n\n依次谢谢：
-        \n\n 1.代码家提供的Gank.API
-        \n 2.Drakeet的开源项目Meizhi
-        \n 3.小荳的阿里健康品牌图标库的SVG图标，链接：
+    <string name="about_voicemaster">关于VoiceMaster</string>
+    <string name="about_detail">
+        VoiceMaster，直译语音大师，作者笔名：慕容靓柏。\n
+        这个是2020年写的Android的实战项目，作为毕业设计。
+        \n本人是个开源爱好者，因此这个项目开源，已经放在CSDN和Github上。
+        \n\n仓库地址：https://github.com/CypressHang/VoiceMaster
+        \n\n因为能力一般，水平有限，所以可能BUG连篇，希望大佬们不吝赐教，感激不尽！
+        \n\n如果你在使用过程中有任何建议或者想法，
+        \n欢迎加作者QQ：251842922 进行反馈，
+        \n本app有计划登录应用市场（不过也说不定）。
+        \n\n鸣谢：
+        \n\n1.小荳的阿里健康品牌图标库的SVG图标，链接：
         \n http://iconfont.cn/collections/detail?cid=1312
-        \n 很萌的一组图标，嘤嘤嘤！
+        \n 很萌的图标，嘤嘤嘤QAQ
+        \n\n2.数不胜数的博主分享的问题解决方案。
     </string>
     <string name="about_me">关于我</string>
     <string name="about_me_detail">
-        一个三流Android开发者，会点Python，
-        \n喜欢写有趣的文章，写过一套Android入门教程；
-        \n博客：http://blog.csdn.net/coder_pig
-        \nGitHub：https://github.com/coder-pig
-        \n掘金和简书：太长不贴，自己搜coder-pig
+        一个刚入门的Android开发者，会点C++，
+        \n喜欢游戏，使用cocos creator做过几个小游戏；
+        \n喜欢写文章，但是并不怎么有趣。
+        \nCSDN博客：http://blog.csdn.net/coder_pig
+        \nGitHub：https://github.com/CypressHang
     </string>
-    <string name="about_open_source">用到的开源库(闲了再补充协议)</string>
+    <string name="about_open_source">用到的开源库——androidx为主(太多了，可能有疏漏，见谅)</string>
     <string name="about_open_source_detail">
-         com.android.support:appcompat-v7
-         \ncom.android.support:design
-         \ncom.android.support:cardview-v7
-         \ncom.android.support.constraint:constraint-layout
-         \ncom.github.chrisbanes:PhotoView
-         \ncom.r0adkll:slidableactivity
-         \ncom.makeramen:roundedimageview
-         \nio.reactivex.rxjava2:rxjava
-         \nio.reactivex.rxjava2:rxandroid
-         \ncom.squareup.okhttp3:okhttp
-         \ncom.squareup.okhttp3:logging-interceptor
-         \ncom.squareup.retrofit2:retrofit
-         \ncom.squareup.retrofit2:converter-gson
-         \ncom.squareup.retrofit2:adapter-rxjava2
-         \ncom.github.bumptech.glide:glide
-         \ncom.github.bumptech.glide:compiler
-         \ncom.jakewharton.timber:timber
+         androidx.appcompat:appcompat:1.1.0
+         \nandroidx.legacy:legacy-support-v4:1.0.0
+         \nandroidx.navigation:navigation-fragment:2.2.1
+         \nandroidx.navigation:navigation-ui:2.2.1
     </string>
 
 

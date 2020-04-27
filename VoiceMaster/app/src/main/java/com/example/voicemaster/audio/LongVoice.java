@@ -1,13 +1,18 @@
 package com.example.voicemaster.audio;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.text.InputType;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.example.voicemaster.R;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,6 +22,8 @@ import androidx.core.content.ContextCompat;
 import com.baidu.speech.EventManager;
 import com.baidu.speech.EventManagerFactory;
 import com.baidu.speech.asr.SpeechConstant;
+import com.example.voicemaster.keyword.KeyWordFind;
+import com.example.voicemaster.translate.Translate;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,7 +35,10 @@ import java.util.Map;
 public class LongVoice extends AppCompatActivity implements com.baidu.speech.EventListener {
     private static final String TAG = "cypress" ;
     protected TextView txtResult;
+    protected EditText et_result;
     protected Button btn;
+    protected Button btn_key;
+    protected Button btn_translation;
     protected Button stopBtn;
     private EventManager asr;
     private void start(){
@@ -49,7 +59,7 @@ public class LongVoice extends AppCompatActivity implements com.baidu.speech.Eve
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_bd);
+        setContentView(R.layout.voice_long);
 
         initView();
         initPermission();
@@ -67,6 +77,19 @@ public class LongVoice extends AppCompatActivity implements com.baidu.speech.Eve
             @Override
             public void onClick(View v) {
                 stop();
+            }
+        });
+
+        btn_translation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                jumpTranslation();
+            }
+        });
+        btn_key.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                jumpKeyWord();
             }
         });
     }
@@ -99,14 +122,21 @@ public class LongVoice extends AppCompatActivity implements com.baidu.speech.Eve
         }
         if (resultTxt != null){
             resultTxt += "\n";
-            txtResult.append(resultTxt);
+//            txtResult.append(resultTxt);
+            et_result.append(resultTxt);
         }
     }
     private void initView() {
         txtResult = findViewById(R.id.txtResult);
         txtResult.setMovementMethod(ScrollingMovementMethod.getInstance());
         btn = findViewById(R.id.btn);
+        btn_key = findViewById(R.id.btn_toKey);
+        btn_translation = findViewById(R.id.btn_toTranslation);
         stopBtn = findViewById(R.id.btn_stop);
+        et_result = findViewById(R.id.et_result);
+        et_result.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+        et_result.setSingleLine(false);
+        et_result.setHorizontallyScrolling(false);
     }
     private void initPermission() {
         String permissions[] = {Manifest.permission.RECORD_AUDIO,
@@ -136,4 +166,25 @@ public class LongVoice extends AppCompatActivity implements com.baidu.speech.Eve
         // 此处为android 6.0以上动态授权的回调，用户自行实现。
     }
 
+    public void jumpKeyWord(){
+        if (et_result.getText().toString() == null || et_result.getText().toString().equals("")){
+            Toast.makeText(this, "啥都没有，不能跳转", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            //取消换行
+            KeyWordFind.TEXT = et_result.getText().toString().replaceAll("\r|\n", "");
+            Log.d(TAG, "onNavigationItemSelected: 打开关键词提取");
+            startActivity(new Intent(this, KeyWordFind.class));
+        }
+    }
+    public void jumpTranslation(){
+        if (et_result.getText().toString() == null || et_result.getText().toString().equals("")){
+            Toast.makeText(this, "啥都没有，不能跳转", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            Translate.TEXT = et_result.getText().toString();
+            Log.d(TAG, "onNavigationItemSelected: 打开翻译");
+            startActivity(new Intent(this, Translate.class));
+        }
+    }
 }

@@ -17,15 +17,10 @@
             android:icon="@drawable/ic_menu_manage"
             android:title="语音识别朗读" />
         <item
-            android:id="@+id/nav_voicetest"
+            android:id="@+id/nav_long"
             android:icon="@drawable/ic_menu_subway"
-            android:title="朗读打分" />
-        <item
-            android:id="@+id/nav_voiceawake"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="语音响应" />
+            android:title="会议语音" />
     </group>
-
 
     <item android:title="更厉害的功能">
         <menu>
@@ -51,13 +46,17 @@
                 android:icon="@drawable/ic_menu_weather"
                 android:title="录音功能" />
             <item
-                android:id="@+id/nav_long"
-                android:icon="@drawable/ic_menu_subway"
-                android:title="长语音" />
-            <item
                 android:id="@+id/nav_voice_change"
                 android:icon="@drawable/ic_menu_tools"
                 android:title="声音处理" />
+            <item
+                android:id="@+id/nav_voicetest"
+                android:icon="@drawable/ic_menu_subway"
+                android:title="朗读打分" />
+            <item
+                android:id="@+id/nav_voiceawake"
+                android:icon="@drawable/ic_menu_slideshow"
+                android:title="语音响应" />
         </menu>
     </item>
 

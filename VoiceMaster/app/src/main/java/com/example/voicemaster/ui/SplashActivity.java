@@ -67,8 +67,11 @@ public class SplashActivity extends AppCompatActivity {
         }
         Log.d(TAG, "init: currentTime 是" +currentTime + "\nlastTime 是 "+lastTime);
 
-        long day = (currentTime - lastTime)/(864000*1000) + 1;
+        long day = (currentTime - lastTime)/(86400*1000) + 1;
         tv_tip.setText("语音大师已经陪伴您 " + day + " 天");
+        if(day >= 30){
+            tv_tip.setText("您已经免费使用语音大师 " + day + " 天，超过30天，请及时充值！");
+        }
     }
 
     /* 页面逻辑跳转 */

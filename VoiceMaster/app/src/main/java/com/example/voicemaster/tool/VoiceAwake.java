@@ -51,7 +51,7 @@ public class VoiceAwake extends Activity implements OnClickListener {
 	private SeekBar seekbarThresh;
 	private final static int MAX = 3000;
 	private final static int MIN = 0;
-	private int curThresh = 1450;
+	private int curThresh = 1600;
 	private String threshStr = "门限值：";
 	private String keep_alive = "1";
     private String ivwNetMode = "0";
@@ -66,7 +66,7 @@ public class VoiceAwake extends Activity implements OnClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setContentView(R.layout.wake_activity);
+		setContentView(R.layout.voice_wake_activity);
 		
 		initUi();
 		// 初始化唤醒对象

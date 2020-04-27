@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:focusable="true"
@@ -19,6 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="语音转文字"
+            android:textColor="@color/pink"
             android:textSize="30sp" />
 
         <ImageButton
@@ -27,7 +29,9 @@
             android:layout_height="35dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:background="@drawable/main_setting_btn_np" />
+            android:background="@drawable/main_setting_btn_np"
+            android:visibility="invisible"
+            tools:visibility="visible" />
     </RelativeLayout>
 
     <EditText
@@ -148,7 +152,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="上传联系人、词表，可以使识别联系人和词表更加准确。"
         android:textSize="@dimen/txt_size" />
 
     <LinearLayout
@@ -171,9 +174,9 @@
             android:id="@+id/iat_upload_userwords"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:text="上传词表"
-            android:textSize="17sp" />
+            android:textSize="17sp"
+            android:visibility="invisible" />
     </LinearLayout>
 
 </LinearLayout>

@@ -117,7 +117,7 @@ public class VoiceTest extends Activity implements OnClickListener {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setContentView(R.layout.isedemo);
+		setContentView(R.layout.voicetest);
 
 		mIse = SpeechEvaluator.createEvaluator(VoiceTest.this, null);
 		initUI();

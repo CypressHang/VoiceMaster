@@ -36,13 +36,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/**
- * 声纹密码示例
- *
- * @author hjyu
- * @date 2017/9/28.
- * @see <a href="http://www.xfyun.cn">讯飞开放平台</a>
- */
 public class VocalVerify extends Activity implements OnClickListener,View.OnTouchListener {
 	private static final String TAG = VocalVerify.class.getSimpleName();
 	// 密码类型
@@ -359,7 +352,7 @@ public class VocalVerify extends Activity implements OnClickListener,View.OnTouc
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setContentView(R.layout.isvdemo);
+		setContentView(R.layout.voice_vertify);
 
 		initUi();
 

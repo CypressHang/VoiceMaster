@@ -41,7 +41,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "cypress";
     private AppBarConfiguration mAppBarConfiguration;
@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity{
         requestPermissions();
 
         // 请勿在“=”与appid之间添加任何空字符或者转义符
-        SpeechUtility.createUtility(this, SpeechConstant.APPID +"=5e6b5006");
+        SpeechUtility.createUtility(this, SpeechConstant.APPID + "=5e6b5006");
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity{
                         startActivity(new Intent(MainActivity.this, SoundRecord.class));
                         break;
                     case R.id.nav_long:
-                        Log.d(TAG, "onNavigationItemSelected: 打开长语音功能");
+                        Log.d(TAG, "onNavigationItemSelected: 打开会议语音功能");
                         startActivity(new Intent(MainActivity.this, LongVoice.class));
                         break;
                     case R.id.nav_voice_change:
@@ -162,13 +162,13 @@ public class MainActivity extends AppCompatActivity{
     }
 
     //动态权限申请
-    private void requestPermissions(){
+    private void requestPermissions() {
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 int permission = ActivityCompat.checkSelfPermission(this,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE);
-                if(permission!= PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(this,new String[] {
+                if (permission != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(this, new String[]{
                             Manifest.permission.WRITE_EXTERNAL_STORAGE,
                             Manifest.permission.LOCATION_HARDWARE,
                             Manifest.permission.READ_PHONE_STATE,
@@ -177,7 +177,7 @@ public class MainActivity extends AppCompatActivity{
                             Manifest.permission.READ_EXTERNAL_STORAGE,
                             Manifest.permission.WRITE_EXTERNAL_STORAGE,
                             Manifest.permission.RECORD_AUDIO,
-                            Manifest.permission.READ_CONTACTS},0x0010);
+                            Manifest.permission.READ_CONTACTS}, 0x0010);
                 }
             }
         } catch (Exception e) {

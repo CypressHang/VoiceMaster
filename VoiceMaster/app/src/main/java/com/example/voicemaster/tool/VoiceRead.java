@@ -39,8 +39,6 @@ import com.example.voicemaster.speech.setting.VoiceReadSettings;
 import java.io.IOException;
 import java.util.Vector;
 
-//import com.iflytek.cloud.param.MscKeys;
-
 public class VoiceRead extends Activity implements OnClickListener {
 	private static String TAG = VoiceRead.class.getSimpleName();
 	// 语音合成对象
@@ -89,8 +87,8 @@ public class VoiceRead extends Activity implements OnClickListener {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setContentView(R.layout.ttsdemo);
-		texts = getResources().getString(R.string.text_tts_source);
+		setContentView(R.layout.voice_read);
+		texts = getResources().getString(R.string.text_cypress_self);
 		initLayout();
 
 		// 初始化合成对象
@@ -150,8 +148,7 @@ public class VoiceRead extends Activity implements OnClickListener {
 	@Override
 	public void onClick(View view) {
 		if( null == mTts ){
-			// 创建单例失败，与 21001 错误为同样原因，参考 http://bbs.xfyun.cn/forum.php?mod=viewthread&tid=9688
-			this.showTip( "创建对象失败，请确认 libmsc.so 放置正确，\n 且有调用 createUtility 进行初始化" );
+//			this.showTip( "创建对象失败，请确认 libmsc.so 放置正确，\n 且有调用 createUtility 进行初始化" );
 			return;
 		}
 		
@@ -177,7 +174,7 @@ public class VoiceRead extends Activity implements OnClickListener {
 //			int code = mTts.synthesizeToUri(text, path, mTtsListener);
 			
 			if (code != ErrorCode.SUCCESS) {
-				showTip("语音合成失败,错误码: " + code+",请点击网址https://www.xfyun.cn/document/error-code查询解决方案");	
+//				showTip("语音合成失败,错误码: " + code+",请点击网址https://www.xfyun.cn/document/error-code查询解决方案");
 			}
 			break;
 		// 取消合成
@@ -218,9 +215,9 @@ public class VoiceRead extends Activity implements OnClickListener {
 					voicerCloud = cloudVoicersValue[which];
 
 					if ("catherine".equals(voicerCloud) || "henry".equals(voicerCloud) || "vimary".equals(voicerCloud)) {
-						 ((EditText) findViewById(R.id.tts_text)).setText(R.string.text_tts_source_en);
+						 ((EditText) findViewById(R.id.tts_text)).setText(R.string.text_cypress_self);
 					}else {
-						((EditText) findViewById(R.id.tts_text)).setText(R.string.text_tts_source);
+						((EditText) findViewById(R.id.tts_text)).setText(R.string.text_cypress_self);
 					}
 					selectedNumCloud = which;
 					dialog.dismiss();
@@ -238,9 +235,9 @@ public class VoiceRead extends Activity implements OnClickListener {
 						int which) { // 点击了哪一项
 					voicerLocal = localVoicersValue[which];
 					if ("catherine".equals(voicerLocal) || "henry".equals(voicerLocal) || "vimary".equals(voicerLocal)) {
-						 ((EditText) findViewById(R.id.tts_text)).setText(R.string.text_tts_source_en);
+						 ((EditText) findViewById(R.id.tts_text)).setText(R.string.text_cypress_self);
 					}else {
-						((EditText) findViewById(R.id.tts_text)).setText(R.string.text_tts_source);
+						((EditText) findViewById(R.id.tts_text)).setText(R.string.text_cypress_self);
 					}
 					selectedNumLocal = which;
 					dialog.dismiss();
@@ -258,9 +255,9 @@ public class VoiceRead extends Activity implements OnClickListener {
 									//Toast.makeText(this,voicerXtts,Toast.LENGTH_LONG);
 									System.out.println("sssssss:"+voicerXtts);
 									if ("catherine".equals(voicerXtts) || "henry".equals(voicerXtts) || "vimary".equals(voicerXtts)) {
-										((EditText) findViewById(R.id.tts_text)).setText(R.string.text_tts_source_en);
+										((EditText) findViewById(R.id.tts_text)).setText(R.string.text_cypress_self);
 									}else {
-										((EditText) findViewById(R.id.tts_text)).setText(R.string.text_tts_source);
+										((EditText) findViewById(R.id.tts_text)).setText(R.string.text_cypress_self);
 									}
 									selectedNumLocal = which;
 									dialog.dismiss();
@@ -281,7 +278,7 @@ public class VoiceRead extends Activity implements OnClickListener {
 		public void onInit(int code) {
 			Log.d(TAG, "InitListener init() code = " + code);
 			if (code != ErrorCode.SUCCESS) {
-        		showTip("初始化失败,错误码："+code+",请点击网址https://www.xfyun.cn/document/error-code查询解决方案");
+//        		showTip("初始化失败,错误码："+code+",请点击网址https://www.xfyun.cn/document/error-code查询解决方案");
 
 			} else {
 				// 初始化成功，之后可以调用startSpeaking方法
@@ -327,7 +324,7 @@ public class VoiceRead extends Activity implements OnClickListener {
 			mPercentForPlaying = percent;
 			showTip(String.format(getString(R.string.tts_toast_format),
 					mPercentForBuffering, mPercentForPlaying));
-			texts = getResources().getString(R.string.text_tts_source);
+			texts = getResources().getString(R.string.text_cypress_self);
 			SpannableStringBuilder style=new SpannableStringBuilder(texts);
 			Log.e(TAG,"beginPos = "+beginPos +"  endPos = "+endPos);
 			style.setSpan(new BackgroundColorSpan(Color.RED),beginPos,endPos, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
