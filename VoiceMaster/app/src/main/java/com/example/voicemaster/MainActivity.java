@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
-import android.widget.Button;
 
 import com.example.voicemaster.audio.SoundRecord;
 import com.example.voicemaster.audio.LongVoice;
@@ -45,7 +44,6 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "cypress";
     private AppBarConfiguration mAppBarConfiguration;
-    private Button mButton;
     private NavigationView navigationView;
     private DrawerLayout drawer;
 

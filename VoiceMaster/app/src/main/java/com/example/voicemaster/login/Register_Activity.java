@@ -126,9 +126,7 @@ public class Register_Activity extends Activity implements View.OnClickListener 
                         registerUserInfo(edit_register.getText().toString(),
                                 edit_setpassword.getText().toString());
                         Toast.makeText(this, "注册成功！", Toast.LENGTH_SHORT).show();
-                        Intent register_intent = new Intent(Register_Activity.this,
-                                Login_Activity.class);
-                        startActivity(register_intent);
+                        finish();
                     } else {
                         Toast.makeText(this, "两次输入密码不同，请重新输入！",
                                 Toast.LENGTH_SHORT).show();
@@ -136,8 +134,7 @@ public class Register_Activity extends Activity implements View.OnClickListener 
                 }
                 break;
             case R.id.btn_cancle:
-                Intent login_intent = new Intent(Register_Activity.this, Login_Activity.class);
-                startActivity(login_intent);
+                finish();
                 break;
             default:
                 break;
