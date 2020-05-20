@@ -241,12 +241,12 @@ public class VoiceToWord extends Activity implements OnClickListener{
 		// 停止听写
 		case R.id.iat_stop:
 			mIat.stopListening();
-			showTip("停止听写");
+			showTip("停止");
 			break;
 		// 取消听写
 		case R.id.iat_cancel:
 			mIat.cancel();
-			showTip("取消听写");
+			showTip("取消");
 			break;
 		// 上传联系人
 		case R.id.iat_upload_contacts:

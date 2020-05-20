@@ -17,6 +17,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,7 +31,7 @@ import java.io.File;
 public class ChangeVoive extends AppCompatActivity {
 
     private static final String TAG = "cypress";
-    private static String fileName = null;
+    public static String fileName = null;
 
     //选择文件的路径
     public String path = null;
@@ -38,6 +39,7 @@ public class ChangeVoive extends AppCompatActivity {
     private Button btn_choose;
     private Button btn_record;
     private Button btn_stop;
+    private TextView tv_message;
 
     private String[] permissions = new String[]{
             Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -49,6 +51,7 @@ public class ChangeVoive extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_voice_change);
+
         if (ContextCompat.checkSelfPermission(ChangeVoive.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(ChangeVoive.this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
                 Toast.makeText(ChangeVoive.this, "用户曾拒绝权限", Toast.LENGTH_SHORT).show();
@@ -60,6 +63,10 @@ public class ChangeVoive extends AppCompatActivity {
         btn_choose = (Button) findViewById(R.id.btn_CVchoose);
         btn_record = (Button) findViewById(R.id.btn_recordStart);
         btn_stop = (Button) findViewById(R.id.btn_stopRecord);
+        tv_message = (TextView) findViewById(R.id.tv_message);
+
+        btn_record.setEnabled(true);
+        btn_stop.setEnabled(false);
 
         btn_choose.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,6 +95,9 @@ public class ChangeVoive extends AppCompatActivity {
                 String storePathPcm = filePcm.toString();
                 path = storePathWav;
                 AudioRecordUtils.getInstance().startRecord(storePathPcm,storePathWav);
+                tv_message.setText("正在录音，结束请按停止录音");
+                btn_record.setEnabled(false);
+                btn_stop.setEnabled(true);
             }
         });
 
@@ -96,6 +106,9 @@ public class ChangeVoive extends AppCompatActivity {
             public void onClick(View v) {
                 AudioRecordUtils.getInstance().stopRecord();
                 Toast.makeText(ChangeVoive.this, "录音完毕 ： " + path, Toast.LENGTH_SHORT).show();
+                tv_message.setText("录音结束.");
+                btn_record.setEnabled(true);
+                btn_stop.setEnabled(false);
             }
         });
 
@@ -133,7 +146,13 @@ public class ChangeVoive extends AppCompatActivity {
 
     public void startChange(View view) {
         if (path == null || path.equals("")) {
-            Toast.makeText(this, "别急，还没选择文件呢", Toast.LENGTH_SHORT).show();
+            if(fileName == null || fileName.equals("")){
+                Toast.makeText(this, "别急，还没选择文件呢", Toast.LENGTH_SHORT).show();
+            }
+            else {
+                path = fileName;
+                Toast.makeText(this, "正在加载，请再点一次", Toast.LENGTH_SHORT).show();
+            }
         } else {
             // tring path = Environment.getExternalStorageDirectory().getPath() + File.separator + "voice.wav";
             // Log.i("getPath", path);

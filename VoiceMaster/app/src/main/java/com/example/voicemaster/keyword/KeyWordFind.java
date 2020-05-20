@@ -1,13 +1,9 @@
 package com.example.voicemaster.keyword;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -16,12 +12,10 @@ import android.widget.Toast;
 
 import com.example.voicemaster.R;
 import com.example.voicemaster.keyword.bean.KeyWordBean;
-import com.example.voicemaster.translate.bean.AddrBean;
 import com.google.gson.Gson;
 import com.iflytek.cloud.msc.util.Base64;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
@@ -31,13 +25,10 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 
 

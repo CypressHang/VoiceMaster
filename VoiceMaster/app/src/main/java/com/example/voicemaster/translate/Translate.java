@@ -15,12 +15,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.voicemaster.R;
-import com.example.voicemaster.translate.bean.AddrBean;
+import com.example.voicemaster.translate.bean.TranslationBean;
 import com.example.voicemaster.translate.util.HttpUtil;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-
-import org.w3c.dom.Text;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
@@ -54,7 +52,7 @@ public class Translate extends AppCompatActivity {
     // 目标语种
     private static String TO = "en";
     // 翻译文本
-    public static String TEXT = "我是柏行啊哈哈哈";
+    public static String TEXT = null;
 
     private static final String TAG = "cypress";
 
@@ -73,7 +71,6 @@ public class Translate extends AppCompatActivity {
         setContentView(R.layout.activity_translate);
 
         et_ori = findViewById(R.id.et_oriTeans);
-        et_ori.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
         tv_result = findViewById(R.id.tv_result);
         btn_nothing = findViewById(R.id.btn_nothing);
         btn_start = findViewById(R.id.btn_start);
@@ -90,7 +87,7 @@ public class Translate extends AppCompatActivity {
 
     }
     private void initText(){
-        if(TEXT == null) TEXT = "王柏行掌握面向对象编程的思想，扎实的C++功底，熟练掌握VC++,VS.NET等开发工具";
+        if(TEXT == null) TEXT = "掌握面向对象编程的思想，扎实的C++功底，熟练掌握VC++,VS.NET等开发工具";
         et_ori.setText(TEXT);
     }
     private void initBtn(){
@@ -113,7 +110,7 @@ public class Translate extends AppCompatActivity {
 
     public String resolve(String result){
         Gson json = new Gson();
-        AddrBean resultJson = json.fromJson(result, AddrBean.class);
+        TranslationBean resultJson = json.fromJson(result, TranslationBean.class);
         return resultJson.getData().getResult().getTrans_result().getDst();
     }
 

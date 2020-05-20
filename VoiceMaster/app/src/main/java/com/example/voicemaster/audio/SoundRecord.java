@@ -2,6 +2,7 @@ package com.example.voicemaster.audio;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioRecord;
@@ -16,8 +17,10 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.voicemaster.MainActivity;
 import com.example.voicemaster.R;
 import com.alibaba.fastjson.JSON;
+import com.example.voicemaster.voicechange.ChangeVoive;
 import com.iflytek.msp.cpdb.lfasr.exception.LfasrException;
 import com.iflytek.msp.cpdb.lfasr.model.LfasrType;
 import com.iflytek.msp.cpdb.lfasr.model.Message;
@@ -170,6 +173,8 @@ public class SoundRecord extends AppCompatActivity implements View.OnClickListen
                     break;
                 }
                 printLog("文件路径是" + file.toString());
+//                ChangeVoive.fileName = file.toString().replace(".pcm", ".wav");
+//                startActivity(new Intent(this, ChangeVoive.class));
                 break;
             case R.id.deleteAudio:
                 deleFile();

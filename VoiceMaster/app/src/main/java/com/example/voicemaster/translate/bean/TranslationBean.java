@@ -1,6 +1,6 @@
 package com.example.voicemaster.translate.bean;
 
-public class AddrBean {
+public class TranslationBean {
 
     /**
      * code : 0
